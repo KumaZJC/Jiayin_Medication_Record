@@ -106,6 +106,28 @@
         }
         .btn-add:active { transform: scale(0.96); opacity: 0.9; }
 
+        .btn-archive {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-archive.active {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            border-color: var(--text-primary);
+        }
+        .btn-archive:active { transform: scale(0.96); opacity: 0.9; }
+
         .btn-ai-spark {
             background: linear-gradient(135deg, #9b51e0, #3082f6, #00f2fe);
             background-size: 200% 200%;
@@ -913,6 +935,9 @@
                 <button class="btn-ai-spark" id="btn-open-ai">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> AI 药剂师
                 </button>
+                <button class="btn-archive" id="btn-open-archive" title="查看已丢弃药品的归档历史（可一键重新买入并重上架）">
+                    <i class="fa-solid fa-box-archive"></i> 归档箱
+                </button>
                 <button class="btn-add" id="btn-open-add-modal">
                     <i class="fa-solid fa-plus"></i> 新增
                 </button>
@@ -944,6 +969,14 @@
         <section class="symptom-section" id="symptom-section-container" style="display:none;">
             <!-- Symptom pills will render dynamically based on available inventory -->
         </section>
+
+        <!-- Archive Tip Banner -->
+        <div id="archive-banner" style="display:none; background: rgba(0, 113, 227, 0.08); border-left: 4px solid var(--accent-blue); padding: 14px; border-radius: 12px; margin: 0 8px; font-size: 13px; line-height: 1.5; color: var(--text-primary);">
+            <div style="font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-circle-info" style="color: var(--accent-blue);"></i> 正在浏览「已丢弃归档箱」
+            </div>
+            如果您重新买入了同款药品，点击卡片上的 <b><i class="fa-solid fa-rotate-left"></i> 重新买入/上架</b> 按钮，即可快速带入药效备注，更新新保质期后即可重回药箱！
+        </div>
 
         <section class="stats-grid">
             <div class="stat-card active" id="stat-card-total">
@@ -1183,7 +1216,7 @@
         let currentManageTab = "location";
         let tempSelectedRating = 0;
 
-        const defaultLocations = ["家里", "公司", "随身包", "已丢弃归档"];
+        const defaultLocations = ["家里", "公司", "随身包"];
         const defaultTypes = ["片剂", "胶囊", "乳膏/凝胶", "颗粒/冲剂", "液体/药水", "其他"];
 
         const symptomCategories = [
@@ -1216,7 +1249,7 @@
 
         let state = {
             medicines: JSON.parse(localStorage.getItem('med_list')) || demoMedicines,
-            locations: JSON.parse(localStorage.getItem('loc_list')) || defaultLocations,
+            locations: (JSON.parse(localStorage.getItem('loc_list')) || defaultLocations).filter(l => l !== "已丢弃归档"),
             types: JSON.parse(localStorage.getItem('type_list')) || defaultTypes
         };
 
@@ -1307,7 +1340,7 @@
             state.locations.forEach(loc => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${currentFilterLocation === loc ? 'active' : ''}`;
-                btn.innerText = loc === "已丢弃归档" ? "🗑️ 已丢弃" : loc;
+                btn.innerText = loc;
                 btn.onclick = () => filterByLocation(loc);
                 tabsContainer.appendChild(btn);
             });
@@ -1379,7 +1412,6 @@
                 listLabel.innerText = "已有位置列表";
                 inputField.placeholder = "输入新位置，如：床头柜";
                 state.locations.forEach(loc => {
-                    if (loc === "已丢弃归档") return;
                     const item = document.createElement('div');
                     item.className = 'location-item';
                     item.innerHTML = `
@@ -1464,13 +1496,25 @@
         }
 
         function renderStatistics() {
-            const activeMeds = state.medicines.filter(m => !m.discarded);
-            let total = activeMeds.length;
+            const isArchiveMode = (currentFilterLocation === "已丢弃归档");
+            let targetMeds = state.medicines;
+            
+            // 彻底修复核心逻辑：在这里强行加入对当前选择位置(Location)的二次过滤
+            if (isArchiveMode) {
+                targetMeds = targetMeds.filter(m => m.discarded);
+            } else {
+                targetMeds = targetMeds.filter(m => !m.discarded);
+                if (currentFilterLocation !== "全部") {
+                    targetMeds = targetMeds.filter(m => m.location === currentFilterLocation);
+                }
+            }
+
+            let total = targetMeds.length;
             let expired = 0;
             let warning = 0;
 
-            activeMeds.forEach(med => {
-                const status = getExpiryStatus(med.expiry, false);
+            targetMeds.forEach(med => {
+                const status = getExpiryStatus(med.expiry, med.discarded);
                 if (status.statusClass === 'status-expired') {
                     expired++;
                 } else if (status.statusClass === 'status-warning') {
@@ -1481,6 +1525,14 @@
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-expired').innerText = expired;
             document.getElementById('stat-warning').innerText = warning;
+
+            // 细节拉满：动态更改面板标题文字
+            const totalLabel = document.querySelector('#stat-card-total .label');
+            if (totalLabel) {
+                totalLabel.innerText = isArchiveMode 
+                    ? "归档总量" 
+                    : (currentFilterLocation === "全部" ? "在库总量" : `${currentFilterLocation}在库`);
+            }
         }
 
         function renderMedicinesGrid() {
@@ -1534,13 +1586,13 @@
                 let discardActionBtn = '';
                 if (med.discarded) {
                     discardActionBtn = `
-                        <button class="btn-discard-card" style="background: var(--accent-green);" onclick="restoreMedicine('${med.id}')" title="恢复至存药">
+                        <button class="btn-discard-card" style="background: var(--accent-green);" onclick="renewMedicine('${med.id}')" title="重新买入（将直接带入原药效与备注并上架）">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
                     `;
                 } else {
                     discardActionBtn = `
-                        <button class="btn-discard-card" onclick="discardMedicine('${med.id}')" title="移入已丢弃归档">
+                        <button class="btn-discard-card" onclick="discardMedicine('${med.id}')" title="移入已丢弃归档箱">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     `;
@@ -1682,26 +1734,47 @@
 
             showConfirm(
                 '确认移入已丢弃归档吗？',
-                `该药品将被归入“已丢弃归档”分类，并在总库存中隐藏。您可以随时恢复它。`,
+                `该药品将被移入顶部的「🗑️ 归档箱」，在正常库存中将被隐藏。买新药时您可以随时去归档箱中一键重新上架。`,
                 () => {
                     state.medicines[index].discarded = true;
                     state.medicines[index].location = "已丢弃归档";
                     saveStateToLocal();
                     refreshUI();
-                    showToast('已安全将该药品归入丢弃归档');
+                    showToast('已将该药品移入归档箱中');
                 }
             );
         };
 
-        window.restoreMedicine = function(medId) {
-            const index = state.medicines.findIndex(m => m.id === medId);
-            if (index === -1) return;
+        window.renewMedicine = function(medId) {
+            const med = state.medicines.find(m => m.id === medId);
+            if (!med) return;
 
-            state.medicines[index].discarded = false;
-            state.medicines[index].location = "家里";
-            saveStateToLocal();
-            refreshUI();
-            showToast('已将该药从归档中成功还原到家里');
+            editingMedId = medId; // overwrite historical record to bring it back to life
+            document.getElementById('modal-title-text').innerText = '重新买入 / 上架药品';
+
+            document.getElementById('med-name-input').value = med.name;
+            document.getElementById('med-type-input').value = med.type || '其他';
+            document.getElementById('med-effect-input').value = med.effect || '';
+            
+            // Clear old expiration date to enforce recording the new batch's life
+            document.getElementById('med-expiry-input').value = ''; 
+            document.getElementById('med-location-input').value = '家里'; 
+            document.getElementById('med-notes-input').value = med.notes || '';
+            setFormRatingState(med.rating || 0);
+
+            if (med.photo) {
+                uploadedImageBase64 = med.photo;
+                previewImg.src = med.photo;
+                previewBox.style.display = 'block';
+                fileTrigger.style.display = 'none';
+            } else {
+                uploadedImageBase64 = null;
+                previewBox.style.display = 'none';
+                fileTrigger.style.display = 'flex';
+                fileInput.value = '';
+            }
+
+            openModal('add-medicine-modal');
         };
 
         window.permanentlyDeleteMedicine = function(medId) {
@@ -1712,7 +1785,7 @@
                     state.medicines = state.medicines.filter(m => m.id !== medId);
                     saveStateToLocal();
                     refreshUI();
-                    showToast('药品信息已被物理永久销毁');
+                    showToast('药品信息已被永久物理销毁');
                 }
             );
         };
@@ -1774,8 +1847,28 @@
             currentFilterSymptom = "全部";
             currentFilterStat = "全部";
             updateStatsUIActiveState(cardTotal);
+            
+            document.getElementById('btn-open-archive').classList.remove('active');
+            document.getElementById('archive-banner').style.display = 'none';
+
             refreshUI();
         }
+
+        document.getElementById('btn-open-archive').onclick = () => {
+            currentFilterLocation = "已丢弃归档";
+            currentFilterSymptom = "全部";
+            currentFilterStat = "全部";
+            updateStatsUIActiveState(cardTotal);
+
+            document.getElementById('btn-open-archive').classList.add('active');
+            document.getElementById('archive-banner').style.display = 'block';
+
+            // Un-highlight active location tabs
+            const tabs = document.querySelectorAll('#location-tabs-container .tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+
+            refreshUI();
+        };
 
         function filterBySymptom(symptomKey) {
             currentFilterSymptom = symptomKey;
@@ -1925,7 +2018,7 @@
             document.getElementById('med-type-input').value = med.type || '其他';
             document.getElementById('med-effect-input').value = med.effect || '';
             document.getElementById('med-expiry-input').value = med.expiry || '';
-            document.getElementById('med-location-input').value = med.location || '未分类';
+            document.getElementById('med-location-input').value = med.location === "已丢弃归档" ? "家里" : (med.location || "未分类");
             document.getElementById('med-notes-input').value = med.notes || '';
             setFormRatingState(med.rating || 0);
 
@@ -1956,7 +2049,8 @@
             if (!name) { showToast('请填写药品名称'); return; }
             if (!expiry) { showToast('请选择保质期/有效期'); return; }
 
-            const targetDiscardState = location === "已丢弃归档";
+            // Since it was saved from the modal form, it is now an active medicine (not archived)
+            const targetDiscardState = false; 
 
             if (editingMedId) {
                 const index = state.medicines.findIndex(m => m.id === editingMedId);
@@ -1967,7 +2061,7 @@
                         discarded: targetDiscardState,
                         photo: uploadedImageBase64
                     };
-                    showToast('药品信息已修改');
+                    showToast('药品信息已保存');
                 }
                 editingMedId = null;
             } else {
@@ -1983,6 +2077,12 @@
 
             saveStateToLocal();
             closeModal('add-medicine-modal');
+            
+            // Auto exit archive view if we successfully re-shelved/added an active medicine
+            document.getElementById('btn-open-archive').classList.remove('active');
+            document.getElementById('archive-banner').style.display = 'none';
+            currentFilterLocation = "全部";
+
             refreshUI();
 
             // Resetting fields
