@@ -4,37 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jiayin's Medication Record</title>
+    <!-- 引入高级系统字体与矢量图标库 -->
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f5f5f7;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-nested: #f5f5f7;
-            --text-primary: #1d1d1f;
+            --bg-color: #0b0b0c;
+            --card-bg: rgba(22, 22, 24, 0.85);
+            --card-nested: rgba(255, 255, 255, 0.04);
+            --text-primary: #f5f5f7;
             --text-secondary: #86868b;
             --accent-blue: #0071e3;
-            --accent-green: #34c759;
-            --accent-orange: #ff9500;
-            --accent-red: #ff3b30;
-            --accent-yellow: #ffcc00;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --border-radius: 20px;
+            --accent-green: #30d158;
+            --accent-orange: #ff9f0a;
+            --accent-red: #ff453a;
+            --accent-yellow: #ffd60a;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-radius: 16px;
             --blur-val: 20px;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.02);
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
-            --ai-gradient: linear-gradient(135deg, #a8c0ff, #3f2b96, #ff8a00);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --ai-gradient: linear-gradient(135deg, #bf5af2, #0a84ff, #5e5ce6);
         }
 
-        @media (prefers-color-scheme: dark) {
+        /* 浅色模式系统自适应 */
+        @media (prefers-color-scheme: light) {
             :root {
-                --bg-color: #000000;
-                --card-bg: rgba(28, 28, 30, 0.85);
-                --card-nested: #1c1c1e;
-                --text-primary: #f5f5f7;
+                --bg-color: #f5f5f7;
+                --card-bg: rgba(255, 255, 255, 0.9);
+                --card-nested: rgba(0, 0, 0, 0.03);
+                --text-primary: #1d1d1f;
                 --text-secondary: #86868b;
-                --border-color: rgba(255, 255, 255, 0.08);
-                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+                --border-color: rgba(0, 0, 0, 0.05);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.04);
+                --accent-blue: #0071e3;
+                --accent-green: #34c759;
+                --accent-orange: #ff9500;
+                --accent-red: #ff3b30;
+                --accent-yellow: #ffcc00;
             }
         }
 
@@ -52,16 +59,16 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 24px 16px;
+            padding: 20px 12px;
             transition: background-color 0.3s ease;
         }
 
         .app-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 800px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             position: relative;
         }
 
@@ -69,40 +76,40 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 8px;
+            padding: 10px 4px 4px;
         }
 
         .header-left h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .header-left p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-add {
             background-color: var(--accent-blue);
             color: #ffffff;
             border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
         }
         .btn-add:active { transform: scale(0.96); opacity: 0.9; }
 
@@ -110,13 +117,13 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-sm);
@@ -129,21 +136,22 @@
         .btn-archive:active { transform: scale(0.96); opacity: 0.9; }
 
         .btn-ai-spark {
-            background: linear-gradient(135deg, #9b51e0, #3082f6, #00f2fe);
+            background: linear-gradient(135deg, #a8c0ff, #3f2b96, #ff8a00);
+            background: var(--ai-gradient);
             background-size: 200% 200%;
             animation: glowWave 4s ease infinite;
             color: #ffffff;
             border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(155, 81, 224, 0.4);
+            box-shadow: 0 4px 12px rgba(94, 92, 230, 0.3);
         }
         .btn-ai-spark:active { transform: scale(0.96); opacity: 0.9; }
 
@@ -156,7 +164,6 @@
         .search-container {
             position: relative;
             width: 100%;
-            padding: 0 8px;
         }
 
         .search-wrapper {
@@ -166,22 +173,22 @@
             width: 100%;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 10px 14px;
+            border-radius: 12px;
+            padding: 8px 12px;
             box-shadow: var(--shadow-sm);
         }
 
         .search-icon {
             color: var(--text-secondary);
-            font-size: 15px;
-            margin-right: 10px;
+            font-size: 14px;
+            margin-right: 8px;
         }
 
         .search-input {
             width: 100%;
             border: none;
             background: transparent;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-primary);
             outline: none;
             font-family: inherit;
@@ -192,18 +199,17 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 16px;
-            padding: 2px 4px;
+            font-size: 14px;
+            padding: 2px;
             display: none;
         }
 
         .location-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             width: 100%;
             overflow-x: auto;
-            padding: 4px 8px;
             scrollbar-width: none;
         }
         .location-section::-webkit-scrollbar { display: none; }
@@ -212,66 +218,62 @@
             display: flex;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 4px;
-            border-radius: 14px;
-            gap: 4px;
+            padding: 3px;
+            border-radius: 12px;
+            gap: 2px;
             flex-shrink: 0;
         }
 
         .tab-btn {
-            padding: 8px 16px;
-            border-radius: 10px;
+            padding: 6px 12px;
+            border-radius: 9px;
             border: none;
             background: transparent;
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             white-space: nowrap;
         }
 
         .tab-btn.active {
-            background: #ffffff;
-            color: #000000;
-            box-shadow: var(--shadow-sm);
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
             font-weight: 600;
         }
 
-        @media (prefers-color-scheme: dark) {
-            .tab-btn.active { background: #3a3a3c; color: #ffffff; }
+        @media (prefers-color-scheme: light) {
+            .tab-btn.active { background: #ffffff; color: #000000; box-shadow: var(--shadow-sm); }
         }
 
+        /* 二级症状胶囊 */
         .symptom-section {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             width: 100%;
             overflow-x: auto;
-            padding: 4px 8px;
-            margin-top: -8px;
             scrollbar-width: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .symptom-section::-webkit-scrollbar { display: none; }
 
         .symptom-pill {
-            padding: 6px 14px;
-            border-radius: 16px;
+            padding: 5px 10px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: var(--shadow-sm);
+            gap: 4px;
         }
-        .symptom-pill:active { transform: scale(0.95); }
 
         .symptom-pill.active {
             background: var(--text-primary);
@@ -284,8 +286,8 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -293,548 +295,420 @@
             cursor: pointer;
             flex-shrink: 0;
             transition: all 0.2s ease;
+            font-size: 12px;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 8px;
         }
 
         .stat-card {
             background: var(--card-bg);
-            backdrop-filter: blur(var(--blur-val));
-            -webkit-backdrop-filter: blur(var(--blur-val));
             border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 14px;
+            border-radius: 12px;
+            padding: 10px;
             text-align: center;
             box-shadow: var(--shadow-sm);
             cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
         .stat-card:active { transform: scale(0.97); }
 
         .stat-card.active {
             border-color: var(--accent-blue);
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 20px rgba(0, 113, 227, 0.15);
+            background-color: rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 10px rgba(0, 113, 227, 0.05);
         }
 
-        @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: light) {
             .stat-card.active {
-                background-color: rgba(48, 48, 50, 0.95);
-                border-color: var(--accent-blue);
+                background-color: rgba(255, 255, 255, 1);
+                box-shadow: 0 4px 16px rgba(0, 113, 227, 0.08);
             }
         }
 
         .stat-card .value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .stat-card .label {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .medicine-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
         }
 
+        /* 重构卡片：去除粗笨的外框层级 */
         .medicine-card {
             background: var(--card-bg);
-            backdrop-filter: blur(var(--blur-val));
-            -webkit-backdrop-filter: blur(var(--blur-val));
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: var(--shadow-md);
-            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: var(--shadow-sm);
             position: relative;
+            padding: 14px;
+            gap: 10px;
+            transition: transform 0.2s ease;
         }
 
-        @media (hover: hover) {
-            .medicine-card:hover { transform: translateY(-4px); }
-        }
-
-        .card-img-wrapper {
+        /* 极致紧凑顶部图幅（有照片时才渲染） */
+        .card-img-mini {
             width: 100%;
-            height: 140px;
-            background: var(--card-nested);
-            position: relative;
+            height: 90px;
+            border-radius: 10px;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 2px;
+        }
+        .card-img-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 卡片头部行（精美的小图标徽章） */
+        .card-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* iOS 设置式微章图标 */
+        .icon-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(0, 113, 227, 0.12);
+            color: var(--accent-blue);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .card-img-placeholder { font-size: 42px; color: var(--text-secondary); opacity: 0.4; }
-
-        .card-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-grow: 1;
+            font-size: 13px;
         }
 
-        .card-header-row {
+        .tag-row {
             display: flex;
-            justify-content: space-between;
+            gap: 4px;
             align-items: center;
-            margin-bottom: 12px;
         }
 
-        .type-badge {
-            font-size: 11px;
+        .type-badge-mini {
+            font-size: 9px;
             font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 2px 6px;
+            border-radius: 6px;
             background: var(--card-nested);
             color: var(--text-secondary);
         }
 
-        .location-tag-inline {
-            font-size: 11px;
-            font-weight: 500;
+        .loc-tag-mini {
+            font-size: 9px;
+            font-weight: 600;
             color: var(--accent-blue);
             background: rgba(0, 113, 227, 0.08);
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 6px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 2px;
         }
 
-        .med-name { font-size: 18px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-        .effect-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+        .med-title-row {
+            margin-top: 1px;
+        }
 
+        .med-name {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--text-primary);
+        }
+        .effect-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        /* 星星评分微型化 */
         .med-rating-stars {
             display: flex;
-            gap: 2px;
+            gap: 1px;
             color: var(--accent-yellow);
-            font-size: 12px;
-            margin-bottom: 8px;
+            font-size: 9px;
+            margin-top: 4px;
         }
 
-        .med-note-box {
-            background: var(--card-nested);
-            border-left: 3px solid var(--accent-blue);
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 12px;
+        /* 重构备注栏：取消灰框，改成优雅的引用边线 */
+        .med-note-quote {
+            border-left: 2px solid var(--accent-blue);
+            padding-left: 6px;
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-bottom: 12px;
-            line-height: 1.4;
-            word-break: break-all;
+            margin-top: 4px;
+            line-height: 1.35;
+            font-style: italic;
         }
 
-        .card-footer { border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: auto; }
-
+        /* 底部边缘生命线（有效期进度条） */
         .expiry-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-top: 4px;
+            padding-top: 4px;
         }
 
-        .progress-bg { height: 4px; background: var(--card-nested); border-radius: 2px; overflow: hidden; width: 100%; }
-        .progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
 
-        .status-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; }
-        .status-safe { color: var(--accent-green); }
-        .status-safe .dot { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
-        .status-warning { color: var(--accent-orange); }
-        .status-warning .dot { background: var(--accent-orange); box-shadow: 0 0 6px var(--accent-orange); }
-        .status-expired { color: var(--accent-red); }
-        .status-expired .dot { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
-        .status-discarded { color: var(--text-secondary); }
-        .status-discarded .dot { background: var(--text-secondary); }
+        /* 绝对贴合卡片底部的超细进度条 */
+        .card-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            overflow: hidden;
+        }
+        .card-progress-fill {
+            height: 100%;
+            transition: width 0.4s ease;
+        }
 
-        .btn-delete-card, .btn-edit-card, .btn-discard-card {
+        /* 微型控制按钮（在右上角低调呈现） */
+        .card-actions-wrapper {
             position: absolute;
             top: 10px;
-            width: 28px;
-            height: 28px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+            opacity: 0.2; /* 默认隐形透明 */
+            transition: opacity 0.2s ease;
+            z-index: 5;
+        }
+
+        .medicine-card:hover .card-actions-wrapper,
+        .card-actions-wrapper:focus-within {
+            opacity: 1; /* 指针悬停时浮现 */
+        }
+
+        .btn-card-micro {
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(8px);
-            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s ease, background 0.2s ease;
-            z-index: 2;
+            font-size: 9px;
+            transition: transform 0.15s ease, background 0.15s ease;
         }
-        .btn-delete-card { right: 10px; }
-        .btn-edit-card { right: 44px; }
-        .btn-discard-card { right: 78px; }
+        @media (prefers-color-scheme: light) {
+            .btn-card-micro {
+                background: rgba(0, 0, 0, 0.05);
+                border-color: rgba(0, 0, 0, 0.05);
+                color: #000000;
+            }
+        }
+        .btn-card-micro:hover { transform: scale(1.1); }
+        .btn-card-micro.del:hover { background: var(--accent-red); color: white; }
+        .btn-card-micro.edit:hover { background: var(--accent-blue); color: white; }
+        .btn-card-micro.archive:hover { background: var(--accent-orange); color: white; }
 
-        .medicine-card:hover .btn-delete-card, .btn-delete-card:focus,
-        .medicine-card:hover .btn-edit-card, .btn-edit-card:focus,
-        .medicine-card:hover .btn-discard-card, .btn-discard-card:focus { opacity: 1; }
-
-        .btn-delete-card:hover { background: var(--accent-red); }
-        .btn-edit-card:hover { background: var(--accent-blue); }
-        .btn-discard-card:hover { background: var(--accent-orange); }
-
+        /* 手机端 2 列高密度紧凑重构（核心提效） */
         @media (max-width: 480px) {
             .medicine-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 8px;
             }
-            .medicine-card { border-radius: 14px; }
-            .card-img-wrapper { height: 80px; }
-            .card-img-placeholder { font-size: 28px; }
-            .card-content { padding: 10px; }
-            .card-header-row { margin-bottom: 6px; flex-wrap: wrap; gap: 4px; }
-            .type-badge, .location-tag-inline { font-size: 9px; padding: 2px 6px; border-radius: 8px; }
-            .med-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-            .effect-text { font-size: 11px; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-            .med-rating-stars { font-size: 9px; margin-bottom: 4px; }
-            .med-note-box { font-size: 10px; padding: 4px 6px; margin-bottom: 6px; border-left-width: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-            .card-footer { padding-top: 6px; }
-            .expiry-row { font-size: 10px; margin-bottom: 4px; }
-            .btn-delete-card, .btn-edit-card, .btn-discard-card { opacity: 0.8; width: 24px; height: 24px; font-size: 10px; top: 6px; }
-            .btn-delete-card { right: 6px; }
-            .btn-edit-card { right: 34px; }
-            .btn-discard-card { right: 62px; }
+            .medicine-card {
+                padding: 10px;
+                gap: 6px;
+                border-radius: 12px;
+            }
+            .card-actions-wrapper {
+                opacity: 0.8; /* 手机上始终保持一定程度可见 */
+                top: 6px;
+                right: 6px;
+            }
+            .med-name { font-size: 13px; }
+            .effect-text { font-size: 10px; line-height: 1.25; }
+            .med-note-quote { font-size: 10px; line-height: 1.25; }
+            .expiry-row { font-size: 9px; }
+            .status-badge { font-size: 9px; }
+            .card-img-mini { height: 64px; border-radius: 8px; }
+            .icon-badge { width: 24px; height: 24px; border-radius: 6px; font-size: 11px; }
         }
 
-        .toast-notification {
-            position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: rgba(0, 0, 0, 0.85);
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 100;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        .archive-banner-style {
+            background: rgba(0, 113, 227, 0.08);
+            border-left: 3px solid var(--accent-blue);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-primary);
         }
-        .toast-notification.active { transform: translateX(-50%) translateY(0); }
 
+        /* 弹窗样式高阶美化 */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 10;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            padding: 16px;
+            padding: 12px;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-sheet {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 480px;
-            max-height: 90vh;
+            max-width: 440px;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            transform: scale(0.9) translateY(20px);
+            box-shadow: var(--shadow-md);
+            transform: scale(0.95) translateY(10px);
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex;
             flex-direction: column;
         }
-        .modal-sheet::before {
-            content: '';
-            width: 36px;
-            height: 5px;
-            background: var(--border-color);
-            border-radius: 3px;
-            align-self: center;
-            margin-top: 10px;
-            margin-bottom: 4px;
-        }
         .modal-overlay.active .modal-sheet { transform: scale(1) translateY(0); }
 
         .modal-header {
-            padding: 16px 24px;
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
         }
-        .modal-header h2 { font-size: 19px; font-weight: 600; }
+        .modal-header h2 { font-size: 16px; font-weight: 600; }
 
-        .btn-close {
-            background: var(--card-nested);
-            border: none;
-            color: var(--text-secondary);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
+        .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
 
-        .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-secondary); padding-left: 2px; }
 
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); padding-left: 4px; }
-
-        .form-control-wrapper { display: flex; gap: 8px; align-items: center; }
-
+        .form-control-wrapper { display: flex; gap: 6px; align-items: center; }
         .form-control {
             background: var(--card-nested);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 14px;
-            font-size: 15px;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
             color: var(--text-primary);
             outline: none;
             width: 100%;
             font-family: inherit;
-            transition: border-color 0.2s ease;
         }
-        .form-control:focus { border-color: var(--accent-blue); }
 
-        .rating-input-wrapper { display: flex; align-items: center; gap: 6px; font-size: 24px; color: var(--text-secondary); }
+        .rating-input-wrapper { display: flex; align-items: center; gap: 4px; font-size: 20px; color: var(--text-secondary); }
         .star-input { cursor: pointer; transition: transform 0.15s ease, color 0.15s ease; }
         .star-input.active { color: var(--accent-yellow); }
-        .star-input:active { transform: scale(0.85); }
 
-        .btn-form-gear {
-            background: var(--card-nested);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .btn-form-gear:active { transform: scale(0.95); }
-
-        .photo-uploader {
-            border: 2px dashed var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            background: var(--card-nested);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .photo-uploader:hover { border-color: var(--accent-blue); background: rgba(0, 113, 227, 0.02); }
-        .photo-uploader input[type="file"] { display: none; }
-
-        .uploader-preview { width: 100%; height: 160px; border-radius: 10px; overflow: hidden; display: none; position: relative; }
-        .uploader-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .uploader-preview .btn-remove-photo {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.6);
-            border: none;
-            color: #ffffff;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-        }
-
-        .location-manager-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 12px;
-            background: var(--card-nested);
-        }
-
-        .location-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        .location-item span { font-size: 14px; font-weight: 500; }
-        .btn-delete-loc { background: transparent; border: none; color: var(--accent-red); cursor: pointer; font-size: 14px; padding: 4px; }
-
-        .modal-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; }
-
-        .btn-secondary {
-            background: var(--card-nested);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 12px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-            transition: background 0.2s ease;
-        }
-        .btn-primary {
-            background: var(--accent-blue);
-            border: none;
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-            transition: opacity 0.2s ease;
-        }
-        .btn-primary:active, .btn-secondary:active { opacity: 0.8; }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        .empty-state i { font-size: 48px; opacity: 0.3; }
-        .empty-state p { font-size: 15px; }
-
-        .alert-item-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            background: var(--card-nested);
-            border-radius: 12px;
-            border-left: 4px solid var(--accent-red);
-        }
-        .alert-item-row.warning { border-left-color: var(--accent-orange); }
-        .alert-item-info h4 { font-size: 14px; font-weight: 600; }
-        .alert-item-info p { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-
+        /* AI Side panel drawer */
         .ai-panel-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 30;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 150;
             display: flex;
             justify-content: flex-end;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
-
         .ai-panel-overlay.active { opacity: 1; pointer-events: auto; }
 
         .ai-sidebar {
             background: var(--card-bg);
             border-left: 1px solid var(--border-color);
             width: 100%;
-            max-width: 440px;
+            max-width: 400px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
         }
-
         .ai-panel-overlay.active .ai-sidebar { transform: translateX(0); }
 
         .ai-header {
-            background: linear-gradient(135deg, rgba(155, 81, 224, 0.1), rgba(48, 130, 246, 0.1));
-            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(191, 90, 242, 0.08), rgba(10, 132, 255, 0.08));
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
         }
-
-        .ai-header-title { display: flex; align-items: center; gap: 10px; }
+        .ai-header-title { display: flex; align-items: center; gap: 8px; }
         .ai-header-title h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            background: linear-gradient(135deg, #9b51e0, #3082f6);
+            background: var(--ai-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .ai-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        .ai-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
 
-        .ai-presets { display: flex; flex-direction: column; gap: 8px; }
-        .ai-preset-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
-        .ai-preset-grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .ai-chip {
             background: var(--card-nested);
             border: 1px solid var(--border-color);
-            padding: 8px 14px;
-            border-radius: 16px;
-            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.2s ease;
         }
         .ai-chip:hover { border-color: var(--accent-blue); background: rgba(0, 113, 227, 0.05); }
 
-        .ai-conversation { display: flex; flex-direction: column; gap: 16px; flex: 1; }
-
-        .chat-bubble { max-width: 85%; padding: 14px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.45; }
         .chat-bubble.user { background: var(--accent-blue); color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
         .chat-bubble.ai {
             background: var(--card-nested);
@@ -843,81 +717,20 @@
             border-bottom-left-radius: 4px;
             border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 100%;
         }
 
-        .ai-report-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
-        .ai-report-title { font-weight: 600; font-size: 14px; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .ai-med-recommend {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .ai-med-info h4 { font-size: 14px; font-weight: 600; }
-        .ai-med-info p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-        .ai-safety-alert {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.2);
-            color: var(--accent-red);
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 6px;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 6px;
         }
 
-        .typing-indicator { display: flex; gap: 4px; align-items: center; justify-content: center; width: 40px; height: 10px; }
-        .typing-indicator span {
-            width: 6px;
-            height: 6px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
-        }
-
-        .ai-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; }
-
-        .ai-input {
-            flex: 1;
-            background: var(--card-nested);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 12px 16px;
-            font-size: 15px;
-            color: var(--text-primary);
-            outline: none;
-            font-family: inherit;
-        }
-        .ai-input:focus { border-color: #9b51e0; }
-
-        .btn-ai-send {
-            background: linear-gradient(135deg, #9b51e0, #3082f6);
-            color: #ffffff;
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-        }
-        .btn-ai-send:active { opacity: 0.8; }
+        .ai-footer { padding: 12px 20px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; }
 
         @media (max-width: 480px) {
-            .ai-sidebar { height: 85vh; border-top-left-radius: 24px; border-top-right-radius: 24px; transform: translateY(100%); }
+            .ai-sidebar { height: 80vh; border-top-left-radius: 20px; border-top-right-radius: 20px; transform: translateY(100%); }
             .ai-panel-overlay { align-items: flex-end; }
             .ai-panel-overlay.active .ai-sidebar { transform: translateY(0); }
         }
@@ -935,7 +748,7 @@
                 <button class="btn-ai-spark" id="btn-open-ai">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> JunCheng医生
                 </button>
-                <button class="btn-archive" id="btn-open-archive" title="查看已丢弃药品的归档历史（可一键重新买入并重上架）">
+                <button class="btn-archive" id="btn-open-archive" title="查看已丢弃药品的归档历史">
                     <i class="fa-solid fa-box-archive"></i> 归档箱
                 </button>
                 <button class="btn-add" id="btn-open-add-modal">
@@ -958,7 +771,7 @@
         <!-- Segmented Location Tabs -->
         <section class="location-section">
             <div class="location-tabs" id="location-tabs-container">
-                <!-- Location buttons will render here -->
+                <!-- Location buttons dynamically rendered -->
             </div>
             <button class="btn-manage-loc" id="btn-open-param-modal" title="参数管理中心">
                 <i class="fa-solid fa-gear"></i>
@@ -967,17 +780,18 @@
 
         <!-- Dynamic Symptom Quick Filter Row -->
         <section class="symptom-section" id="symptom-section-container" style="display:none;">
-            <!-- Symptom pills will render dynamically based on available inventory -->
+            <!-- Dynamic symptoms capsules based on current stock -->
         </section>
 
         <!-- Archive Tip Banner -->
-        <div id="archive-banner" style="display:none; background: rgba(0, 113, 227, 0.08); border-left: 4px solid var(--accent-blue); padding: 14px; border-radius: 12px; margin: 0 8px; font-size: 13px; line-height: 1.5; color: var(--text-primary);">
-            <div style="font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+        <div id="archive-banner" class="archive-banner-style" style="display:none;">
+            <div style="font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
                 <i class="fa-solid fa-circle-info" style="color: var(--accent-blue);"></i> 正在浏览「已丢弃归档箱」
             </div>
-            如果您重新买入了同款药品，点击卡片上的 <b><i class="fa-solid fa-rotate-left"></i> 重新买入/上架</b> 按钮，即可快速带入药效备注，更新新保质期后即可重回药箱！
+            如果您重新买入了归档箱中的药物，点击 <b><i class="fa-solid fa-rotate-left"></i> 重新买入/上架</b> 即可快速导入并复活它！
         </div>
 
+        <!-- Dynamic Statistics Widget Row -->
         <section class="stats-grid">
             <div class="stat-card active" id="stat-card-total">
                 <div class="value" id="stat-total">0</div>
@@ -995,7 +809,7 @@
 
         <!-- Medicines Grid -->
         <main class="medicine-grid" id="medicine-grid-container">
-            <!-- Medicine cards will render dynamically -->
+            <!-- Dynamic medicine cards list -->
         </main>
     </div>
 
@@ -1004,7 +818,7 @@
         <div class="ai-sidebar">
             <div class="ai-header">
                 <div class="ai-header-title">
-                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #9b51e0; font-size: 18px;"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #bf5af2; font-size: 16px;"></i>
                     <h2>宝贝的私人医生</h2>
                 </div>
                 <button class="btn-close" onclick="closeModal('ai-assistant-overlay')">
@@ -1013,12 +827,12 @@
             </div>
             <div class="ai-body" id="ai-chat-body">
                 <div class="chat-bubble ai" id="ai-init-msg">
-                    宝贝！我是你的专属医生。我可以根据你不舒服的症状（例如：发烧、长青春痘、肚子疼），帮你在你当前的药箱中快速筛选出最合适的应对药物，并为你检查它们的保质期安全哟~
+                    宝贝！我是你的专属医生。我可以根据你不舒服的症状（例如：发烧、脸上起红疹、肚子疼），自动搜寻你当前药箱中对症的安全药品哦~
                 </div>
 
                 <div class="ai-presets" id="ai-presets-box">
-                    <div class="ai-preset-label">试着点击以下常见症状问我：</div>
-                    <div class="ai-preset-grid">
+                    <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">试着点击以下常见症状问我：</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                         <div class="ai-chip" onclick="askAIPreset('我感冒发烧头疼，吃什么药？')">🤒 感冒发烧头疼</div>
                         <div class="ai-chip" onclick="askAIPreset('我脸上长痘痘发红，有消炎药吗？')">🔴 脸上长痘消炎</div>
                         <div class="ai-chip" onclick="askAIPreset('身上起红疹很痒，是不是过敏了')">🌾 皮肤过敏荨麻疹</div>
@@ -1026,13 +840,11 @@
                     </div>
                 </div>
 
-                <div class="ai-conversation" id="ai-conversation-log" style="display:none;">
-                    <!-- Appended dynamically -->
-                </div>
+                <div class="ai-conversation" id="ai-conversation-log" style="display:none;"></div>
             </div>
             <div class="ai-footer">
-                <input type="text" id="ai-user-input" class="ai-input" placeholder="宝贝你哪里不舒服了呀...">
-                <button class="btn-ai-send" id="btn-send-ai-query">
+                <input type="text" id="ai-user-input" class="form-control" placeholder="宝贝你哪里不舒服了呀..." style="border-radius:12px;">
+                <button class="btn-add" id="btn-send-ai-query" style="height:40px; width:40px; display:flex; align-items:center; justify-content:center; padding:0;">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
@@ -1057,7 +869,7 @@
                 <div class="form-group">
                     <label for="med-type-input">药品性状</label>
                     <div class="form-control-wrapper">
-                        <select id="med-type-input" class="form-control">
+                        <select id="med-type-input" class="form-control" style="border-radius:10px;">
                             <!-- Populated Dynamically -->
                         </select>
                         <button class="btn-form-gear" onclick="openParamModalWithTab('type')" title="管理药性形状">
@@ -1085,7 +897,7 @@
 
                 <div class="form-group">
                     <label for="med-notes-input">用药备注 / 医嘱备忘 (选填)</label>
-                    <textarea id="med-notes-input" class="form-control" placeholder="例如：每次一袋，一日三次" rows="2" style="resize: none; font-family: inherit;"></textarea>
+                    <textarea id="med-notes-input" class="form-control" placeholder="例如：每次一袋，一日三次" rows="2" style="resize: none; font-family: inherit; border-radius:10px;"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -1096,7 +908,7 @@
                 <div class="form-group">
                     <label for="med-location-input">存放位置</label>
                     <div class="form-control-wrapper">
-                        <select id="med-location-input" class="form-control">
+                        <select id="med-location-input" class="form-control" style="border-radius:10px;">
                             <!-- Populated Dynamically -->
                         </select>
                         <button class="btn-form-gear" onclick="openParamModalWithTab('location')" title="管理存放位置">
@@ -1108,8 +920,8 @@
                 <div class="form-group">
                     <label>添加药品照片</label>
                     <div class="photo-uploader" id="photo-uploader-trigger">
-                        <i class="fa-solid fa-camera" style="font-size: 24px; color: var(--accent-blue);"></i>
-                        <span style="font-size: 13px; font-weight: 500;">点击拍照或选择照片</span>
+                        <i class="fa-solid fa-camera" style="font-size: 20px; color: var(--accent-blue);"></i>
+                        <span style="font-size: 12px; font-weight: 500;">点击拍照或选择照片</span>
                         <input type="file" id="med-photo-input" accept="image/*">
                     </div>
                     <div class="uploader-preview" id="photo-preview-box">
@@ -1128,7 +940,7 @@
     </div>
 
     <!-- MODAL 2: Manage Parameters -->
-    <div class="modal-overlay" id="manage-parameters-modal" style="z-index: 15;">
+    <div class="modal-overlay" id="manage-parameters-modal" style="z-index: 105;">
         <div class="modal-sheet">
             <div class="modal-header">
                 <h2>参数设置中心</h2>
@@ -1137,21 +949,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="location-tabs" style="width: 100%; margin-bottom: 8px;">
+                <div class="location-tabs" style="width: 100%; margin-bottom: 6px;">
                     <button class="tab-btn active" id="btn-switch-loc" style="flex: 1;">存放位置</button>
                     <button class="tab-btn" id="btn-switch-type" style="flex: 1;">药品性状</button>
                 </div>
 
-                <div class="form-group" style="flex-direction: row; gap: 10px;">
+                <div class="form-group" style="flex-direction: row; gap: 8px;">
                     <input type="text" id="new-param-input" class="form-control" placeholder="输入新位置名称">
-                    <button class="btn-add" id="btn-add-new-param" style="height: 46px; flex-shrink:0;">添加</button>
+                    <button class="btn-add" id="btn-add-new-param" style="height: 40px; flex-shrink:0;">添加</button>
                 </div>
 
                 <div class="form-group">
                     <label id="param-list-label">已有位置列表</label>
-                    <div class="location-manager-list" id="param-manager-list">
-                        <!-- Rendered dynamically -->
-                    </div>
+                    <div class="location-manager-list" id="param-manager-list"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1160,56 +970,53 @@
         </div>
     </div>
 
-    <!-- MODAL 3: Custom Elegant Confirm Dialog -->
-    <div class="modal-overlay" id="custom-dialog-modal" style="z-index: 20;">
-        <div class="modal-sheet" style="max-width: 320px; border-radius: 20px;">
-            <div class="modal-body" style="text-align: center; padding: 24px 20px 16px;">
-                <h3 id="dialog-title" style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">提示</h3>
-                <p id="dialog-message" style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;"></p>
+    <!-- MODAL 3: Custom Dialog Confirm overlay -->
+    <div class="modal-overlay" id="custom-dialog-modal" style="z-index: 110;">
+        <div class="modal-sheet" style="max-width: 300px; border-radius: 18px;">
+            <div class="modal-body" style="text-align: center; padding: 20px 16px 12px;">
+                <h3 id="dialog-title" style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">提示</h3>
+                <p id="dialog-message" style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;"></p>
             </div>
             <div style="display: flex; border-top: 1px solid var(--border-color);">
-                <button id="dialog-cancel-btn" style="flex: 1; border: none; background: transparent; padding: 12px; font-weight: 400; font-size: 15px; color: var(--text-secondary); cursor: pointer; border-right: 1px solid var(--border-color); outline: none;">取消</button>
-                <button id="dialog-confirm-btn" style="flex: 1; border: none; background: transparent; color: var(--accent-red); padding: 12px; font-weight: 600; font-size: 15px; cursor: pointer; outline: none;">确定</button>
+                <button id="dialog-cancel-btn" style="flex: 1; border: none; background: transparent; padding: 10px; font-weight: 400; font-size: 13px; color: var(--text-secondary); cursor: pointer; border-right: 1px solid var(--border-color); outline: none;">取消</button>
+                <button id="dialog-confirm-btn" style="flex: 1; border: none; background: transparent; color: var(--accent-red); padding: 10px; font-weight: 600; font-size: 13px; cursor: pointer; outline: none;">确定</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 4: Expiry Alert Modal with Smart Snooze Actions -->
-    <div class="modal-overlay" id="expiry-alert-modal" style="z-index: 25;">
-        <div class="modal-sheet" style="max-width: 400px; border-radius: 24px;">
+    <!-- MODAL 4: Expiry Alert with Snooze -->
+    <div class="modal-overlay" id="expiry-alert-modal" style="z-index: 115;">
+        <div class="modal-sheet" style="max-width: 360px; border-radius: 20px;">
             <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-                <h2 style="color: var(--accent-red); font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                <h2 style="color: var(--accent-red); font-size: 16px; display: flex; align-items: center; gap: 6px;">
                     <i class="fa-solid fa-triangle-exclamation"></i> 药箱过期安全警示
                 </h2>
                 <button class="btn-close" onclick="closeModal('expiry-alert-modal')">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="modal-body" style="padding-top: 10px; max-height: 45vh; overflow-y: auto;">
-                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+            <div class="modal-body" style="padding-top: 8px; max-height: 40vh; overflow-y: auto;">
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
                     检测到以下药品的保质期存在安全风险，请及时处理以免误服：
                 </p>
-                <div id="expiry-alert-list" style="display: flex; flex-direction: column; gap: 10px;">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="expiry-alert-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
             </div>
-            <div class="modal-footer" style="padding-top: 12px; border-top: none; flex-direction: column; gap: 8px;">
-                <button class="btn-primary" style="background-color: var(--accent-blue); width: 100%;" onclick="closeModal('expiry-alert-modal')">我知道了</button>
-                <div style="display:flex; width:100%; gap:8px;">
-                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(1)">今日不再提醒</button>
-                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(99999999)">不再提醒</button>
+            <div class="modal-footer" style="padding-top: 10px; border-top: none; flex-direction: column; gap: 6px;">
+                <button class="btn-primary" style="width: 100%;" onclick="closeModal('expiry-alert-modal')">我知道了</button>
+                <div style="display:flex; width:100%; gap:6px;">
+                    <button class="btn-secondary" style="font-size:11px; padding: 6px;" onclick="snoozeAlerts(1)">今日不再提醒</button>
+                    <button class="btn-secondary" style="font-size:11px; padding: 6px;" onclick="snoozeAlerts(7)">7天内不再提醒</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Floating Global Toast -->
-    <div id="custom-toast" class="toast-notification">提示内容</div>
+    <div id="custom-toast" class="toast-notification"></div>
 
     <script>
         let currentFilterLocation = "全部";
         let currentFilterSymptom = "全部";
-        let currentFilterStat = "全部"; // "全部", "已过期", "即将过期"
+        let currentFilterStat = "全部"; 
         let currentSearchQuery = "";
         let uploadedImageBase64 = null;
         let editingMedId = null;
@@ -1230,9 +1037,11 @@
             { key: "肠胃调理", keywords: ["肠胃", "腹泻", "拉肚子", "胀气", "胃", "肠", "整肠生"], emoji: "🤢" }
         ];
 
+        // Core system time bounds for 2026.07
         const currentYear = 2026;
         const currentMonth = 7;
 
+        // Base structural demo medicines
         const demoMedicines = [
             { id: "1", name: "小柴胡", type: "颗粒/冲剂", effect: "感冒退热、和解少阳", expiry: "2026-11", location: "家里", photo: null, notes: "一日三次，温水冲服，药效很温和", rating: 5, discarded: false },
             { id: "2", name: "头孢拉丁", type: "胶囊", effect: "消炎抗生素", expiry: "2027-01", location: "家里", photo: null, notes: "抗生素，遵医嘱按时服用，吃完绝不可饮酒", rating: 4, discarded: false },
@@ -1499,7 +1308,6 @@
             const isArchiveMode = (currentFilterLocation === "已丢弃归档");
             let targetMeds = state.medicines;
             
-            // 彻底修复核心逻辑：在这里强行加入对当前选择位置(Location)的二次过滤
             if (isArchiveMode) {
                 targetMeds = targetMeds.filter(m => m.discarded);
             } else {
@@ -1526,7 +1334,6 @@
             document.getElementById('stat-expired').innerText = expired;
             document.getElementById('stat-warning').innerText = warning;
 
-            // 细节拉满：动态更改面板标题文字
             const totalLabel = document.querySelector('#stat-card-total .label');
             if (totalLabel) {
                 totalLabel.innerText = isArchiveMode 
@@ -1560,10 +1367,13 @@
                 card.className = 'medicine-card';
                 card.id = `med-card-${med.id}`;
 
-                let imageBlock = med.photo 
-                    ? `<div class="card-img-wrapper"><img src="${med.photo}" alt="${med.name}"></div>`
-                    : `<div class="card-img-wrapper"><div class="card-img-placeholder"><i class="fa-solid ${displayIcon}"></i></div></div>`;
+                // 重构：只有当存在真实药品照片时，才渲染迷你图片卡头。否则不占用大量高度。
+                let imageHeader = '';
+                if (med.photo) {
+                    imageHeader = `<div class="card-img-mini"><img src="${med.photo}" alt="${med.name}"></div>`;
+                }
 
+                // 评分小星星
                 let starsHtml = '';
                 if (med.rating && med.rating > 0) {
                     starsHtml = '<div class="med-rating-stars">';
@@ -1573,64 +1383,74 @@
                     starsHtml += '</div>';
                 }
 
+                // 重构备注：弃用灰色套娃大盒子，使用精致无边界的 Quote 左引线设计
                 let noteHtml = '';
                 if (med.notes && med.notes.trim() !== "") {
                     noteHtml = `
-                        <div class="med-note-box" title="${med.notes}">
-                            <i class="fa-solid fa-pen-nib" style="margin-right: 4px; color: var(--accent-blue); font-size:10px;"></i>
+                        <div class="med-note-quote" title="${med.notes}">
                             <span>${med.notes}</span>
                         </div>
                     `;
                 }
 
+                // 微型化常驻浮动控制按钮
                 let discardActionBtn = '';
                 if (med.discarded) {
                     discardActionBtn = `
-                        <button class="btn-discard-card" style="background: var(--accent-green);" onclick="renewMedicine('${med.id}')" title="重新买入（将直接带入原药效与备注并上架）">
+                        <button class="btn-card-micro archive" onclick="renewMedicine('${med.id}')" title="重新买入（将直接带入原药效与备注并上架）">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
                     `;
                 } else {
                     discardActionBtn = `
-                        <button class="btn-discard-card" onclick="discardMedicine('${med.id}')" title="移入已丢弃归档箱">
+                        <button class="btn-card-micro archive" onclick="discardMedicine('${med.id}')" title="移入已丢弃归档箱">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     `;
                 }
 
                 card.innerHTML = `
-                    <button class="btn-edit-card" onclick="editMedicine('${med.id}')" title="编辑药品">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button class="btn-delete-card" onclick="permanentlyDeleteMedicine('${med.id}')" title="彻底物理销毁">
-                        <i class="fa-solid fa-radiation"></i>
-                    </button>
-                    ${discardActionBtn}
-                    ${imageBlock}
-                    <div class="card-content">
-                        <div class="card-header-row">
-                            <span class="type-badge">${med.type || "其他"}</span>
-                            <span class="location-tag-inline">
+                    <div class="card-actions-wrapper">
+                        <button class="btn-card-micro edit" onclick="editMedicine('${med.id}')" title="编辑药品">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        ${discardActionBtn}
+                        <button class="btn-card-micro del" onclick="permanentlyDeleteMedicine('${med.id}')" title="彻底删除">
+                            <i class="fa-solid fa-radiation"></i>
+                        </button>
+                    </div>
+                    
+                    ${imageHeader}
+
+                    <div class="card-meta-row">
+                        <div class="icon-badge">
+                            <i class="fa-solid ${displayIcon}"></i>
+                        </div>
+                        <div class="tag-row">
+                            <span class="type-badge-mini">${med.type || "其他"}</span>
+                            <span class="loc-tag-mini">
                                 <i class="fa-solid fa-location-dot"></i>${med.location || "未分类"}
                             </span>
                         </div>
+                    </div>
+
+                    <div class="med-title-row">
                         <h2 class="med-name">${med.name}</h2>
                         <p class="effect-text">${med.effect || "暂无效果描述"}</p>
-                        
                         ${starsHtml}
                         ${noteHtml}
-                        
-                        <div class="card-footer">
-                            <div class="expiry-row">
-                                <div class="status-badge ${status.statusClass}">
-                                    <span class="dot"></span>${status.label}
-                                </div>
-                                <span>至 ${med.expiry ? med.expiry.replace('-', '.') : '未知'}</span>
-                            </div>
-                            <div class="progress-bg">
-                                <div class="progress-fill" style="width: ${status.percent}%; background-color: ${status.color};"></div>
-                            </div>
+                    </div>
+
+                    <div class="expiry-row">
+                        <div class="status-badge ${status.statusClass}">
+                            <span class="dot"></span>${status.label}
                         </div>
+                        <span>至 ${med.expiry ? med.expiry.replace('-', '.') : '未知'}</span>
+                    </div>
+
+                    <!-- 极致一体化的卡片底部极细边缘生命线 -->
+                    <div class="card-progress-bar">
+                        <div class="card-progress-fill" style="width: ${status.percent}%; background-color: ${status.color};"></div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1674,7 +1494,7 @@
             const snoozeUntil = Date.now() + (days * 24 * 60 * 60 * 1000);
             localStorage.setItem('med_cabinet_alert_snooze', snoozeUntil);
             closeModal('expiry-alert-modal');
-            showToast(`已成功为您拦截警报提示`);
+            showToast(`已成功为您拦截警报提示（静音 ${days} 天）`);
         };
 
         function checkExpiryAlerts() {
@@ -1734,13 +1554,13 @@
 
             showConfirm(
                 '确认移入已丢弃归档吗？',
-                `该药品将被移入顶部的「🗑️ 归档箱」，在正常库存中将被隐藏。买新药时您可以随时去归档箱中一键重新上架。`,
+                `该药品将被移入顶部的「归档箱」，在正常库存中将被隐藏。买新药时您可以随时一键重新上架。`,
                 () => {
                     state.medicines[index].discarded = true;
                     state.medicines[index].location = "已丢弃归档";
                     saveStateToLocal();
                     refreshUI();
-                    showToast('已将该药品移入归档箱中');
+                    showToast('已移入归档箱');
                 }
             );
         };
@@ -1749,14 +1569,12 @@
             const med = state.medicines.find(m => m.id === medId);
             if (!med) return;
 
-            editingMedId = medId; // overwrite historical record to bring it back to life
+            editingMedId = medId; 
             document.getElementById('modal-title-text').innerText = '重新买入 / 上架药品';
 
             document.getElementById('med-name-input').value = med.name;
             document.getElementById('med-type-input').value = med.type || '其他';
             document.getElementById('med-effect-input').value = med.effect || '';
-            
-            // Clear old expiration date to enforce recording the new batch's life
             document.getElementById('med-expiry-input').value = ''; 
             document.getElementById('med-location-input').value = '家里'; 
             document.getElementById('med-notes-input').value = med.notes || '';
@@ -1785,7 +1603,7 @@
                     state.medicines = state.medicines.filter(m => m.id !== medId);
                     saveStateToLocal();
                     refreshUI();
-                    showToast('药品信息已被永久物理销毁');
+                    showToast('药品已被永久物理销毁');
                 }
             );
         };
@@ -1863,7 +1681,6 @@
             document.getElementById('btn-open-archive').classList.add('active');
             document.getElementById('archive-banner').style.display = 'block';
 
-            // Un-highlight active location tabs
             const tabs = document.querySelectorAll('#location-tabs-container .tab-btn');
             tabs.forEach(t => t.classList.remove('active'));
 
@@ -2049,7 +1866,6 @@
             if (!name) { showToast('请填写药品名称'); return; }
             if (!expiry) { showToast('请选择保质期/有效期'); return; }
 
-            // Since it was saved from the modal form, it is now an active medicine (not archived)
             const targetDiscardState = false; 
 
             if (editingMedId) {
@@ -2078,14 +1894,12 @@
             saveStateToLocal();
             closeModal('add-medicine-modal');
             
-            // Auto exit archive view if we successfully re-shelved/added an active medicine
             document.getElementById('btn-open-archive').classList.remove('active');
             document.getElementById('archive-banner').style.display = 'none';
             currentFilterLocation = "全部";
 
             refreshUI();
 
-            // Resetting fields
             document.getElementById('med-name-input').value = '';
             document.getElementById('med-effect-input').value = '';
             document.getElementById('med-expiry-input').value = '';
@@ -2139,7 +1953,7 @@
             const aiLoadingMsg = document.createElement('div');
             aiLoadingMsg.className = 'chat-bubble ai';
             aiLoadingMsg.innerHTML = `
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">AI 正在分析您症状并检索药箱中...</div>
+                <div style="font-size:11px; color:var(--text-secondary); margin-bottom:4px;">AI 正在分析您症状并检索药箱中...</div>
                 <div class="typing-indicator"><span></span><span></span><span></span></div>
             `;
             logContainer.appendChild(aiLoadingMsg);
@@ -2170,7 +1984,6 @@
                 let score = 0;
                 const medName = (med.name || "").toLowerCase();
                 const medEffect = (med.effect || "").toLowerCase();
-                const medType = (med.type || "").toLowerCase();
                 const medNotes = (med.notes || "").toLowerCase();
 
                 identifiedSymptoms.forEach(symptom => {
@@ -2197,18 +2010,18 @@
             if (identifiedSymptoms.includes("通用匹配") && matchedMeds.length === 0) {
                 reportHtml += `
                     <div style="font-weight:600; color:var(--accent-orange);"><i class="fa-solid fa-triangle-exclamation"></i> 抱歉，未能自动识别到对症标签</div>
-                    <p style="margin-top:6px; font-size:13px; color:var(--text-secondary);">我没能在您的药箱中找到与您的描述明显对症的药。建议您在主页直接通过【搜索框】模糊检索，或直接去正规药店咨询专业医生。</p>
+                    <p style="margin-top:4px; font-size:12px; color:var(--text-secondary);">我没能在您的药箱中找到与您的描述明显对症的药。建议您在主页直接通过【搜索框】模糊检索，或直接去正规药店咨询专业医生。</p>
                 `;
             } else {
                 reportHtml += `
-                    <div style="font-weight:600; color:#9b51e0;"><i class="fa-solid fa-circle-check"></i> 诊断分析报告</div>
-                    <p style="margin-top:4px; font-size:13px;">分析您的诉求，为您在药箱中筛选出以下对症存药：</p>
+                    <div style="font-weight:600; color:#bf5af2;"><i class="fa-solid fa-circle-check"></i> 诊断分析报告</div>
+                    <p style="margin-top:2px; font-size:12px;">分析您的诉求，为您在药箱中筛选出以下对症存药：</p>
                     <div class="ai-report-section">
                 `;
 
                 if (matchedMeds.length === 0) {
                     reportHtml += `
-                        <p style="font-size:13px; color:var(--text-secondary);"><i class="fa-solid fa-box-open"></i> 当前药箱里暂无直接对症的有效药，建议您及时去实体药店采购相关抗感冒/消炎类的药物。</p>
+                        <p style="font-size:12px; color:var(--text-secondary);"><i class="fa-solid fa-box-open"></i> 当前药箱里暂无直接对症的有效药，建议您及时去实体药店采购相关抗感冒/消炎类的药物。</p>
                     `;
                 } else {
                     matchedMeds.forEach(item => {
@@ -2224,15 +2037,15 @@
                             warningTag = `<span class="ai-safety-alert" style="background:rgba(52,199,89,0.1); color:var(--accent-green);"><i class="fa-solid fa-shield-halved"></i> 安全在保</span>`;
                         }
 
-                        let aiRatingString = m.rating ? ` | 个人推荐评分：<b>${'⭐'.repeat(m.rating)}</b>` : '';
-                        let aiNotesBlock = m.notes ? `<p style="margin-top: 4px; font-size:11px; color:#9b51e0; background:rgba(155, 81, 224, 0.05); padding: 4px 8px; border-radius: 4px;"><b>💡 个人备注：</b>${m.notes}</p>` : '';
+                        let aiRatingString = m.rating ? ` | 评分：<b>${'⭐'.repeat(m.rating)}</b>` : '';
+                        let aiNotesBlock = m.notes ? `<p style="margin-top: 4px; font-size:11px; color:#bf5af2; background:rgba(191, 90, 242, 0.05); padding: 4px 8px; border-radius: 4px;"><b>💡 用药提示：</b>${m.notes}</p>` : '';
 
                         reportHtml += `
                             <div class="ai-med-recommend" style="display:block;">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <div class="ai-med-info">
-                                        <h4>${m.name}</h4>
-                                        <p><i class="fa-solid fa-location-dot"></i> 存放在：<b>${m.location}</b>${aiRatingString}</p>
+                                    <div>
+                                        <h4 style="font-size:13px; font-weight:600;">${m.name}</h4>
+                                        <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;"><i class="fa-solid fa-location-dot"></i> 存放在：<b>${m.location}</b>${aiRatingString}</p>
                                     </div>
                                     <div>${warningTag}</div>
                                 </div>
@@ -2244,7 +2057,7 @@
 
                 reportHtml += `
                     </div>
-                    <div style="margin-top:12px; font-size:11px; color:var(--text-secondary); line-height:1.4; border-top:1px solid var(--border-color); padding-top:10px;">
+                    <div style="margin-top:10px; font-size:11px; color:var(--text-secondary); line-height:1.4; border-top:1px solid var(--border-color); padding-top:8px;">
                         <i class="fa-solid fa-circle-info"></i> <b>用药安全指南：</b>
                         消炎药与中药感冒冲剂请勿随意叠加。服用前请仔细核对包装说明书中的剂量。若症状持续未见改善，请务必立刻前往医院就诊。
                     </div>
@@ -2284,10 +2097,9 @@
             openModal('manage-parameters-modal');
         };
 
-        // 页面初始化加载时，依次执行：更新UI、安全检查
+        // Initialize UI view and active watchguards
         refreshUI();
-        
-        checkExpiryAlerts(); // 🚀 注入此行核心调用，确保每次打开网页时立即执行“安全哨兵”到期体检！
+        checkExpiryAlerts(); 
     </script>
 </body>
 </html>
