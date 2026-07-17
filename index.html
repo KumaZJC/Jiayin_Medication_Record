@@ -294,6 +294,25 @@
             padding: 14px;
             text-align: center;
             box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .stat-card:active {
+            transform: scale(0.97);
+        }
+
+        .stat-card.active {
+            border-color: var(--accent-blue);
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 113, 227, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .stat-card.active {
+                background-color: rgba(48, 48, 50, 0.95);
+                border-color: var(--accent-blue);
+            }
         }
 
         .stat-card .value {
@@ -788,6 +807,29 @@
         .empty-state i { font-size: 48px; opacity: 0.3; }
         .empty-state p { font-size: 15px; }
 
+        /* Expiry Alert Specific List Styles */
+        .alert-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--card-nested);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-red);
+        }
+        .alert-item-row.warning {
+            border-left-color: var(--accent-orange);
+        }
+        .alert-item-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .alert-item-info p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
         /* ==================== AI ASSISTANT PANEL ==================== */
         .ai-panel-overlay {
             position: fixed;
@@ -1086,15 +1128,15 @@
 
         <!-- Dynamic Statistics Row -->
         <section class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card active" id="stat-card-total">
                 <div class="value" id="stat-total">0</div>
                 <div class="label">在库总量</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" id="stat-card-warning">
                 <div class="value" style="color: var(--accent-orange);" id="stat-warning">0</div>
                 <div class="label">即将过期</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" id="stat-card-safe">
                 <div class="value" style="color: var(--accent-green);" id="stat-safe">0</div>
                 <div class="label">安全在保</div>
             </div>
@@ -1286,6 +1328,31 @@
         </div>
     </div>
 
+    <!-- MODAL 4: Expiry Alert Modal -->
+    <div class="modal-overlay" id="expiry-alert-modal" style="z-index: 25;">
+        <div class="modal-sheet" style="max-width: 400px; border-radius: 24px;">
+            <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                <h2 style="color: var(--accent-red); font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 药箱过期安全警示
+                </h2>
+                <button class="btn-close" onclick="closeModal('expiry-alert-modal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 10px; max-height: 50vh; overflow-y: auto;">
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+                    检测到以下药品的保质期存在安全风险，请及时处理以免误服：
+                </p>
+                <div id="expiry-alert-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 12px; border-top: none;">
+                <button class="btn-primary" style="background-color: var(--accent-red); width: 100%;" onclick="closeModal('expiry-alert-modal')">我知道了</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Global Toast -->
     <div id="custom-toast" class="toast-notification">提示内容</div>
 
@@ -1293,6 +1360,7 @@
         // --- 1. INITIAL SYSTEM STATE & FALLBACK DEMO DATA ---
         let currentFilterLocation = "全部";
         let currentFilterSymptom = "全部";
+        let currentFilterStat = "全部"; // "全部", "即将过期", "安全在保"
         let currentSearchQuery = "";
         let uploadedImageBase64 = null;
         let editingMedId = null;
@@ -1539,6 +1607,19 @@
                 }
             }
 
+            // 1.5 Filter by dynamic stats cards
+            if (currentFilterStat !== "全部") {
+                list = list.filter(med => {
+                    const status = getExpiryStatus(med.expiry);
+                    if (currentFilterStat === "即将过期") {
+                        return status.statusClass === 'status-warning' || status.statusClass === 'status-expired';
+                    } else if (currentFilterStat === "安全在保") {
+                        return status.statusClass === 'status-safe';
+                    }
+                    return true;
+                });
+            }
+
             if (currentSearchQuery.trim() !== "") {
                 const keywords = currentSearchQuery.toLowerCase().trim().split(/\s+/);
                 list = list.filter(med => {
@@ -1563,11 +1644,26 @@
         }
 
         function renderStatistics(filteredMeds) {
-            let total = filteredMeds.length;
+            // ALWAYS calculate statistics based on the full subset matching the Location & Symptom to reflect exact box stats
+            let listForStats = state.medicines;
+            if (currentFilterLocation !== "全部") {
+                listForStats = listForStats.filter(m => m.location === currentFilterLocation);
+            }
+            if (currentFilterSymptom !== "全部") {
+                const targetCategory = symptomCategories.find(c => c.key === currentFilterSymptom);
+                if (targetCategory) {
+                    listForStats = listForStats.filter(med => {
+                        const searchString = ((med.name || "") + " " + (med.effect || "")).toLowerCase();
+                        return targetCategory.keywords.some(kw => searchString.includes(kw.toLowerCase()));
+                    });
+                }
+            }
+
+            let total = listForStats.length;
             let warning = 0;
             let safe = 0;
 
-            filteredMeds.forEach(med => {
+            listForStats.forEach(med => {
                 const status = getExpiryStatus(med.expiry);
                 if (status.statusClass === 'status-warning' || status.statusClass === 'status-expired') {
                     warning++;
@@ -1679,6 +1775,83 @@
             renderMedicinesGrid();
         }
 
+        // --- 4. STATS ROW CLICK SELECTION CONTROLS ---
+        const cardTotal = document.getElementById('stat-card-total');
+        const cardWarning = document.getElementById('stat-card-warning');
+        const cardSafe = document.getElementById('stat-card-safe');
+
+        function updateStatsUIActiveState(activeCard) {
+            [cardTotal, cardWarning, cardSafe].forEach(card => card.classList.remove('active'));
+            activeCard.classList.add('active');
+        }
+
+        cardTotal.onclick = () => {
+            currentFilterStat = "全部";
+            updateStatsUIActiveState(cardTotal);
+            renderMedicinesGrid();
+        };
+
+        cardWarning.onclick = () => {
+            currentFilterStat = "即将过期";
+            updateStatsUIActiveState(cardWarning);
+            renderMedicinesGrid();
+        };
+
+        cardSafe.onclick = () => {
+            currentFilterStat = "安全在保";
+            updateStatsUIActiveState(cardSafe);
+            renderMedicinesGrid();
+        };
+
+        // --- 4.5 EXPIRED/EXPIRING MONITOR DIALOG SENSING ---
+        function checkExpiryAlerts() {
+            const container = document.getElementById('expiry-alert-list');
+            container.innerHTML = '';
+            let riskCount = 0;
+
+            state.medicines.forEach(med => {
+                if (!med.expiry) return;
+                const [year, month] = med.expiry.split('-').map(Number);
+                const remainingMonths = (year - currentYear) * 12 + (month - currentMonth);
+
+                let label = "";
+                let itemClass = "alert-item-row";
+                let badgeStyle = "color: var(--accent-red); background: rgba(255,59,48,0.1);";
+
+                if (remainingMonths < 0) {
+                    label = "已过期";
+                } else if (remainingMonths === 0) {
+                    label = "本月到期";
+                    itemClass = "alert-item-row warning";
+                    badgeStyle = "color: var(--accent-orange); background: rgba(255,149,0,0.1);";
+                } else if (remainingMonths === 1) {
+                    label = "到期前一个月";
+                    itemClass = "alert-item-row warning";
+                    badgeStyle = "color: var(--accent-orange); background: rgba(255,149,0,0.1);";
+                }
+
+                if (label) {
+                    riskCount++;
+                    const row = document.createElement('div');
+                    row.className = itemClass;
+                    row.innerHTML = `
+                        <div class="alert-item-info">
+                            <h4>${med.name}</h4>
+                            <p><i class="fa-solid fa-location-dot"></i> ${med.location || "未分类"}</p>
+                        </div>
+                        <span class="ai-safety-alert" style="${badgeStyle}">${label}</span>
+                    `;
+                    container.appendChild(row);
+                }
+            });
+
+            if (riskCount > 0) {
+                setTimeout(() => {
+                    openModal('expiry-alert-modal');
+                }, 800); // Gentle lag launch for sleek Apple style
+            }
+        }
+
         // --- 4. SEARCH INTERACTION LOGIC ---
         const searchInput = document.getElementById('search-input');
         const searchClearBtn = document.getElementById('search-clear-btn');
@@ -1706,11 +1879,15 @@
         function filterByLocation(loc) {
             currentFilterLocation = loc;
             currentFilterSymptom = "全部";
+            currentFilterStat = "全部"; // reset stats filter
+            updateStatsUIActiveState(cardTotal);
             refreshUI();
         }
 
         function filterBySymptom(symptomKey) {
             currentFilterSymptom = symptomKey;
+            currentFilterStat = "全部"; // reset stats filter
+            updateStatsUIActiveState(cardTotal);
             renderSymptomFilterRow();
             renderMedicinesGrid();
         }
@@ -2192,6 +2369,11 @@
         document.getElementById('btn-open-param-modal').onclick = () => {
             renderParamsList();
             openModal('manage-parameters-modal');
+        };
+
+        // Window onload initialization
+        window.onload = function() {
+            checkExpiryAlerts();
         };
 
         refreshUI();
