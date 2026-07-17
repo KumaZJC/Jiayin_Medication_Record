@@ -728,7 +728,6 @@
         .empty-state i { font-size: 48px; opacity: 0.3; }
         .empty-state p { font-size: 15px; }
 
-        /* Expiry Warning Specific Row Item */
         .alert-item-row {
             display: flex;
             align-items: center;
@@ -907,12 +906,12 @@
     <div class="app-container">
         <header>
             <div class="header-left">
-                <h1>JiaYin的智能药箱</h1>
-                <p>宝贝要身体健健康康的哦！</p>
+                <h1>我的智能药箱</h1>
+                <p>便捷存放，省心追踪保质期</p>
             </div>
             <div class="header-actions">
                 <button class="btn-ai-spark" id="btn-open-ai">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> JunCheng医生
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI 药剂师
                 </button>
                 <button class="btn-add" id="btn-open-add-modal">
                     <i class="fa-solid fa-plus"></i> 新增
@@ -981,7 +980,7 @@
             </div>
             <div class="ai-body" id="ai-chat-body">
                 <div class="chat-bubble ai" id="ai-init-msg">
-                    宝宝！我是你的专属医生。我可以根据你不舒服的症状（例如：发烧、长青春痘、肚子拉稀），帮你在你当前的药箱中快速筛选出最合适的应对药物，并为你检查它们的保质期安全哟。
+                    您好！我是您的专属 AI 药剂师。我可以根据您不舒服的症状（例如：发烧、长青春痘、肚子疼），帮您在您当前的药箱中快速筛选出最合适的应对药物，并为您检查它们的保质期安全。
                 </div>
 
                 <div class="ai-presets" id="ai-presets-box">
@@ -1161,12 +1160,11 @@
                     <!-- Populated dynamically -->
                 </div>
             </div>
-            <!-- Dynamic Snooze controls to prevent alert fatigue -->
             <div class="modal-footer" style="padding-top: 12px; border-top: none; flex-direction: column; gap: 8px;">
                 <button class="btn-primary" style="background-color: var(--accent-blue); width: 100%;" onclick="closeModal('expiry-alert-modal')">我知道了</button>
                 <div style="display:flex; width:100%; gap:8px;">
                     <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(1)">今日不再提醒</button>
-                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(604800)">不再提醒</button>
+                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(7)">7天内不再提醒</button>
                 </div>
             </div>
         </div>
@@ -1176,7 +1174,6 @@
     <div id="custom-toast" class="toast-notification">提示内容</div>
 
     <script>
-        // --- 1. INITIAL SYSTEM STATE & FALLBACK DEMO DATA ---
         let currentFilterLocation = "全部";
         let currentFilterSymptom = "全部";
         let currentFilterStat = "全部"; // "全部", "已过期", "即将过期"
@@ -1186,7 +1183,6 @@
         let currentManageTab = "location";
         let tempSelectedRating = 0;
 
-        // "已丢弃" represents a system location reserved for discarded archive items
         const defaultLocations = ["家里", "公司", "随身包", "已丢弃归档"];
         const defaultTypes = ["片剂", "胶囊", "乳膏/凝胶", "颗粒/冲剂", "液体/药水", "其他"];
 
@@ -1201,16 +1197,14 @@
             { key: "肠胃调理", keywords: ["肠胃", "腹泻", "拉肚子", "胀气", "胃", "肠", "整肠生"], emoji: "🤢" }
         ];
 
-        // Active timeline matching user request
         const currentYear = 2026;
         const currentMonth = 7;
 
-        // Expanded Mock Data with notes, ratings, and discarded flag
         const demoMedicines = [
             { id: "1", name: "小柴胡", type: "颗粒/冲剂", effect: "感冒退热、和解少阳", expiry: "2026-11", location: "家里", photo: null, notes: "一日三次，温水冲服，药效很温和", rating: 5, discarded: false },
             { id: "2", name: "头孢拉丁", type: "胶囊", effect: "消炎抗生素", expiry: "2027-01", location: "家里", photo: null, notes: "抗生素，遵医嘱按时服用，吃完绝不可饮酒", rating: 4, discarded: false },
             { id: "3", name: "盐酸米诺环素胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2027-04", location: "家里", photo: null, notes: "治疗痘痘，每天晚餐后吃一粒", rating: 4, discarded: false },
-            { id: "4", name: "盐酸多西环素肠溶胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2028-08", location: "家里", photo: null, notes: "临期，吃药期间注意防晒", rating: 5, discarded: false },
+            { id: "4", name: "盐酸多西环素肠溶胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2028-08", location: "家里", photo: null, notes: "防晒注意，遵医嘱口服", rating: 5, discarded: false },
             { id: "5", name: "依巴斯汀片", type: "片剂", effect: "抗过敏、荨麻疹", expiry: "2027-12", location: "家里", photo: null, notes: "每天睡前吃一粒，吃了会有睡意", rating: 5, discarded: false },
             { id: "6", name: "盐酸氨溴索分散片", type: "片剂", effect: "止咳祛痰", expiry: "2026-09", location: "家里", photo: null, notes: "饭后服用，溶水或吞服都可以", rating: 3, discarded: false },
             { id: "7", name: "999 感冒灵", type: "颗粒/冲剂", effect: "感冒发热、头痛鼻塞", expiry: "2026-07", location: "家里", photo: null, notes: "有退热药成分，不与其它感冒药叠加", rating: 5, discarded: false },
@@ -1232,7 +1226,34 @@
             localStorage.setItem('type_list', JSON.stringify(state.types));
         }
 
-        // Expiry core parsing logic
+        function showToast(msg) {
+            const toast = document.getElementById('custom-toast');
+            toast.innerText = msg;
+            toast.classList.add('active');
+            setTimeout(() => { toast.classList.remove('active'); }, 2500);
+        }
+
+        function showConfirm(title, message, onConfirm, onCancel) {
+            const dialog = document.getElementById('custom-dialog-modal');
+            const titleEl = document.getElementById('dialog-title');
+            const msgEl = document.getElementById('dialog-message');
+            const confirmBtn = document.getElementById('dialog-confirm-btn');
+            const cancelBtn = document.getElementById('dialog-cancel-btn');
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            dialog.classList.add('active');
+
+            confirmBtn.onclick = () => {
+                dialog.classList.remove('active');
+                if (onConfirm) onConfirm();
+            };
+            cancelBtn.onclick = () => {
+                dialog.classList.remove('active');
+                if (onCancel) onCancel();
+            };
+        }
+
         function getExpiryStatus(expiryStr, isDiscarded) {
             if (isDiscarded) {
                 return { label: "已丢弃归档", color: "var(--text-secondary)", statusClass: "status-discarded", percent: 0 };
@@ -1270,8 +1291,6 @@
             return "fa-prescription-bottle";
         }
 
-        // --- 3. UI RENDERING AND CONDITIONAL FILTERS ---
-
         function renderLocationsUI() {
             const tabsContainer = document.getElementById('location-tabs-container');
             const locSelect = document.getElementById('med-location-input');
@@ -1279,14 +1298,12 @@
 
             tabsContainer.innerHTML = '';
             
-            // "全部" (All) tab
             const allBtn = document.createElement('button');
             allBtn.className = `tab-btn ${currentFilterLocation === '全部' ? 'active' : ''}`;
             allBtn.innerText = '全部';
             allBtn.onclick = () => filterByLocation('全部');
             tabsContainer.appendChild(allBtn);
 
-            // Filter out default view settings to cleanly display positions
             state.locations.forEach(loc => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${currentFilterLocation === loc ? 'active' : ''}`;
@@ -1295,7 +1312,6 @@
                 tabsContainer.appendChild(btn);
             });
 
-            // Populate selectors inside modifiable fields
             locSelect.innerHTML = '';
             state.locations.forEach(loc => {
                 const option = document.createElement('option');
@@ -1329,7 +1345,6 @@
                 });
             });
 
-            // If selected location has no active categories, gracefully hide
             if (representedSymptoms.size === 0 || currentFilterLocation === "已丢弃归档") {
                 container.style.display = 'none';
                 return;
@@ -1364,7 +1379,7 @@
                 listLabel.innerText = "已有位置列表";
                 inputField.placeholder = "输入新位置，如：床头柜";
                 state.locations.forEach(loc => {
-                    if (loc === "已丢弃归档") return; // system category locked
+                    if (loc === "已丢弃归档") return;
                     const item = document.createElement('div');
                     item.className = 'location-item';
                     item.innerHTML = `
@@ -1395,7 +1410,6 @@
         function getFilteredMedicines() {
             let list = state.medicines;
 
-            // Explicitly filter out discarded/archived drugs unless we are viewing the Discarded tab
             if (currentFilterLocation === "已丢弃归档") {
                 list = list.filter(m => m.discarded);
             } else {
@@ -1405,7 +1419,6 @@
                 }
             }
 
-            // Symptom subset filters
             if (currentFilterSymptom !== "全部" && currentFilterLocation !== "已丢弃归档") {
                 const targetCategory = symptomCategories.find(c => c.key === currentFilterSymptom);
                 if (targetCategory) {
@@ -1416,7 +1429,6 @@
                 }
             }
 
-            // Strictly separate Expired from Expiring Soon as requested
             if (currentFilterStat !== "全部") {
                 list = list.filter(med => {
                     const status = getExpiryStatus(med.expiry, med.discarded);
@@ -1429,7 +1441,6 @@
                 });
             }
 
-            // Keyword fuzzy search integration
             if (currentSearchQuery.trim() !== "") {
                 const keywords = currentSearchQuery.toLowerCase().trim().split(/\s+/);
                 list = list.filter(med => {
@@ -1452,9 +1463,7 @@
             return list;
         }
 
-        // Calculate dynamic active stats counts
         function renderStatistics() {
-            // Stats computed strictly against active, non-discarded subset
             const activeMeds = state.medicines.filter(m => !m.discarded);
             let total = activeMeds.length;
             let expired = 0;
@@ -1479,7 +1488,7 @@
             container.innerHTML = '';
 
             const filteredMeds = getFilteredMedicines();
-            renderStatistics(); // update metrics alongside grid sync
+            renderStatistics();
 
             if (filteredMeds.length === 0) {
                 container.innerHTML = `
@@ -1522,7 +1531,6 @@
                     `;
                 }
 
-                // Discard actions toggle based on active list vs archive trash list
                 let discardActionBtn = '';
                 if (med.discarded) {
                     discardActionBtn = `
@@ -1583,7 +1591,6 @@
             renderMedicinesGrid();
         }
 
-        // --- 4. DATA PANEL SELECTION AND INTERACTIVITY ---
         const cardTotal = document.getElementById('stat-card-total');
         const cardExpired = document.getElementById('stat-card-expired');
         const cardWarning = document.getElementById('stat-card-warning');
@@ -1593,7 +1600,6 @@
             activeCard.classList.add('active');
         }
 
-        // Stat Card Filter Triggers
         cardTotal.onclick = () => {
             currentFilterStat = "全部";
             updateStatsUIActiveState(cardTotal);
@@ -1612,7 +1618,6 @@
             renderMedicinesGrid();
         };
 
-        // Smart Snooze logic to prevent alert fatigue
         window.snoozeAlerts = function(days) {
             const snoozeUntil = Date.now() + (days * 24 * 60 * 60 * 1000);
             localStorage.setItem('med_cabinet_alert_snooze', snoozeUntil);
@@ -1621,17 +1626,15 @@
         };
 
         function checkExpiryAlerts() {
-            // Check if user has active snooze silent setting
             const snoozeSetting = localStorage.getItem('med_cabinet_alert_snooze');
             if (snoozeSetting && Date.now() < parseInt(snoozeSetting)) {
-                return; // Silent bypass
+                return;
             }
 
             const container = document.getElementById('expiry-alert-list');
             container.innerHTML = '';
             let riskCount = 0;
 
-            // Only alerts for active, non-discarded assets
             state.medicines.filter(m => !m.discarded).forEach(med => {
                 if (!med.expiry) return;
                 const [year, month] = med.expiry.split('-').map(Number);
@@ -1673,8 +1676,6 @@
             }
         }
 
-        // --- 5. DISCARDED & ARCHIVE LIFE-CYCLE MANAGEMENT ---
-
         window.discardMedicine = function(medId) {
             const index = state.medicines.findIndex(m => m.id === medId);
             if (index === -1) return;
@@ -1697,7 +1698,7 @@
             if (index === -1) return;
 
             state.medicines[index].discarded = false;
-            state.medicines[index].location = "家里"; // Fallback to safe default
+            state.medicines[index].location = "家里";
             saveStateToLocal();
             refreshUI();
             showToast('已将该药从归档中成功还原到家里');
@@ -1716,7 +1717,40 @@
             );
         };
 
-        // --- 6. INTERACTION TRIGGERS ---
+        window.deleteParameter = function(val) {
+            if (currentManageTab === "location") {
+                showConfirm(
+                    '确认删除位置吗？',
+                    `在“${val}”的药品将被重新归入“未分类”位置中。`,
+                    () => {
+                        state.locations = state.locations.filter(l => l !== val);
+                        state.medicines.forEach(med => { if (med.location === val) med.location = "未分类"; });
+                        if (!state.locations.includes("未分类")) state.locations.push("未分类");
+                        if (currentFilterLocation === val) currentFilterLocation = "全部";
+                        
+                        saveStateToLocal();
+                        refreshUI();
+                        renderParamsList();
+                        showToast('存放位置已成功移除');
+                    }
+                );
+            } else {
+                showConfirm(
+                    '确认删除性状吗？',
+                    `性状为“${val}”的药品将被重新标记为“其他”。`,
+                    () => {
+                        state.types = state.types.filter(t => t !== val);
+                        state.medicines.forEach(med => { if (med.type === val) med.type = "其他"; });
+                        if (!state.types.includes("其他")) state.types.push("其他");
+                        
+                        saveStateToLocal();
+                        refreshUI();
+                        renderParamsList();
+                        showToast('药品性状已成功移除');
+                    }
+                );
+            }
+        };
 
         const searchInput = document.getElementById('search-input');
         const searchClearBtn = document.getElementById('search-clear-btn');
@@ -1734,8 +1768,6 @@
             renderMedicinesGrid();
             searchInput.focus();
         };
-
-        // --- 7. PARAMETERS & GENERAL CONTROLS ---
 
         function filterByLocation(loc) {
             currentFilterLocation = loc;
@@ -1766,7 +1798,50 @@
             openModal('manage-parameters-modal');
         };
 
-        // Star rating interactivity
+        document.getElementById('btn-switch-loc').onclick = () => {
+            currentManageTab = "location";
+            document.getElementById('btn-switch-loc').classList.add('active');
+            document.getElementById('btn-switch-type').classList.remove('active');
+            renderParamsList();
+        };
+
+        document.getElementById('btn-switch-type').onclick = () => {
+            currentManageTab = "type";
+            document.getElementById('btn-switch-type').classList.add('active');
+            document.getElementById('btn-switch-loc').classList.remove('active');
+            renderParamsList();
+        };
+
+        document.getElementById('new-param-input').onkeydown = (e) => {
+            if (e.key === "Enter") {
+                document.getElementById('btn-add-new-param').click();
+            }
+        };
+
+        document.getElementById('btn-add-new-param').onclick = () => {
+            const input = document.getElementById('new-param-input');
+            const val = input.value.trim();
+            if (!val) {
+                showToast("请输入名称");
+                return;
+            }
+
+            if (currentManageTab === "location") {
+                if (state.locations.includes(val)) { showToast('该存放位置已存在哦'); return; }
+                state.locations.push(val);
+                showToast('新存放位置添加成功');
+            } else {
+                if (state.types.includes(val)) { showToast('该药品性状已存在哦'); return; }
+                state.types.push(val);
+                showToast('新药品性状添加成功');
+            }
+
+            saveStateToLocal();
+            input.value = '';
+            renderParamsList();
+            renderLocationsUI();
+        };
+
         const starElements = document.querySelectorAll('.star-input');
         const ratingClearBtn = document.getElementById('rating-clear-btn');
 
@@ -1794,7 +1869,6 @@
             ratingClearBtn.style.display = ratingVal > 0 ? 'inline-block' : 'none';
         }
 
-        // File/Photo handler and previewers
         const fileTrigger = document.getElementById('photo-uploader-trigger');
         const fileInput = document.getElementById('med-photo-input');
         const previewBox = document.getElementById('photo-preview-box');
@@ -1911,7 +1985,7 @@
             closeModal('add-medicine-modal');
             refreshUI();
 
-            // Clear state and fields
+            // Resetting fields
             document.getElementById('med-name-input').value = '';
             document.getElementById('med-effect-input').value = '';
             document.getElementById('med-expiry-input').value = '';
@@ -1922,8 +1996,6 @@
             fileTrigger.style.display = 'flex';
             fileInput.value = '';
         };
-
-        // --- 8. AI VIRTUAL PHARMACIST BOT ---
 
         const symptomDictionary = {
             "感冒": ["感冒", "发热", "发烧", "头痛", "鼻塞", "流涕", "打喷嚏", "咳嗽", "咳", "祛痰", "退烧", "冷", "寒", "柴胡", "999", "退热"],
@@ -1967,7 +2039,7 @@
             const aiLoadingMsg = document.createElement('div');
             aiLoadingMsg.className = 'chat-bubble ai';
             aiLoadingMsg.innerHTML = `
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">JunCheng正在绞尽脑汁的分析症状和药箱ing!!!</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">AI 正在分析您症状并检索药箱中...</div>
                 <div class="typing-indicator"><span></span><span></span><span></span></div>
             `;
             logContainer.appendChild(aiLoadingMsg);
@@ -1994,7 +2066,6 @@
 
             if (identifiedSymptoms.length === 0) { identifiedSymptoms = ["通用匹配"]; }
 
-            // Search against active, non-discarded cabinet inventory only
             state.medicines.filter(m => !m.discarded).forEach(med => {
                 let score = 0;
                 const medName = (med.name || "").toLowerCase();
@@ -2025,20 +2096,19 @@
             
             if (identifiedSymptoms.includes("通用匹配") && matchedMeds.length === 0) {
                 reportHtml += `
-                    <div style="font-weight:600; color:var(--accent-orange);"><i class="fa-solid fa-triangle-exclamation"></i> 抱歉，未能识别到您的症状</div>
-                    <p style="margin-top:6px; font-size:13px; color:var(--text-secondary);">我没能在您的药箱中找到与您的描述相匹配的药。建议您在主页通过【搜索框】直接模糊检索，或直接去正规药店咨询专业医生。</p>
+                    <div style="font-weight:600; color:var(--accent-orange);"><i class="fa-solid fa-triangle-exclamation"></i> 抱歉，未能自动识别到对症标签</div>
+                    <p style="margin-top:6px; font-size:13px; color:var(--text-secondary);">我没能在您的药箱中找到与您的描述明显对症的药。建议您在主页直接通过【搜索框】模糊检索，或直接去正规药店咨询专业医生。</p>
                 `;
             } else {
                 reportHtml += `
                     <div style="font-weight:600; color:#9b51e0;"><i class="fa-solid fa-circle-check"></i> 诊断分析报告</div>
-                    <p style="margin-top:4px; font-size:13px;">分析您的诉求，为您在药箱中筛选出以下<b>对症存药</b>：</p>
-                    
+                    <p style="margin-top:4px; font-size:13px;">分析您的诉求，为您在药箱中筛选出以下对症存药：</p>
                     <div class="ai-report-section">
                 `;
 
                 if (matchedMeds.length === 0) {
                     reportHtml += `
-                        <p style="font-size:13px; color:var(--text-secondary);"><i class="fa-solid fa-box-open"></i> 当前药箱里<b>暂无</b>直接对症的有效药，建议您及时去实体药店采购相关抗感冒/消炎类的药物。</p>
+                        <p style="font-size:13px; color:var(--text-secondary);"><i class="fa-solid fa-box-open"></i> 当前药箱里暂无直接对症的有效药，建议您及时去实体药店采购相关抗感冒/消炎类的药物。</p>
                     `;
                 } else {
                     matchedMeds.forEach(item => {
@@ -2089,7 +2159,6 @@
             chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        // --- 9. MODAL UTILITY TRIGGERS ---
         window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
         window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
@@ -2115,7 +2184,6 @@
             openModal('manage-parameters-modal');
         };
 
-        // Window onload initialization
         window.onload = function() {
             checkExpiryAlerts();
         };
