@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能家庭药箱 | Medical Cabinet</title>
+    <!-- 引入高级字体与矢量图标库 -->
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-nested: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent-blue: #0071e3;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --border-radius: 20px;
+            --blur-val: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --card-bg: rgba(28, 28, 30, 0.85);
+                --card-nested: #1c1c1e;
+                --text-primary: #f5f5f7;
+                --text-secondary: #86868b;
+                --border-color: rgba(255, 255, 255, 0.08);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header Layout */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-add {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+        }
+
+        .btn-add:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        /* Storage Location Segment Menu (iOS style) */
+        .location-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            overflow-x: auto;
+            padding: 4px 8px;
+            scrollbar-width: none;
+        }
+        .location-section::-webkit-scrollbar {
+            display: none;
+        }
+
+        .location-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            border-radius: 14px;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: var(--shadow-sm);
+            font-weight: 600;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tab-btn.active {
+                background: #3a3a3c;
+                color: #ffffff;
+            }
+        }
+
+        /* Unified Inline & Floating Gear Button */
+        .btn-manage-loc {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .btn-inline-manage {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--accent-blue);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .btn-inline-manage:hover {
+            background: rgba(0, 113, 227, 0.08);
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--blur-val));
+            -webkit-backdrop-filter: blur(var(--blur-val));
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .stat-card .label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Medicines Grid */
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+
+        /* Medicine Card Design */
+        .medicine-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--blur-val));
+            -webkit-backdrop-filter: blur(var(--blur-val));
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+
+        @media (hover: hover) {
+            .medicine-card:hover {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Dynamic Image Header */
+        .card-img-wrapper {
+            width: 100%;
+            height: 140px;
+            background: var(--card-nested);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-img-placeholder {
+            font-size: 42px;
+            color: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .type-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: var(--card-nested);
+            color: var(--text-secondary);
+        }
+
+        .location-tag-inline {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent-blue);
+            background: rgba(0, 113, 227, 0.08);
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .med-name {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .effect-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 14px;
+            margin-top: auto;
+        }
+
+        .expiry-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .progress-bg {
+            height: 4px;
+            background: var(--card-nested);
+            border-radius: 2px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        /* Expiry Status Dots */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+        .status-safe { color: var(--accent-green); }
+        .status-safe .dot { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+        .status-warning { color: var(--accent-orange); }
+        .status-warning .dot { background: var(--accent-orange); box-shadow: 0 0 6px var(--accent-orange); }
+        .status-expired { color: var(--accent-red); }
+        .status-expired .dot { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
+
+        /* Delete/Edit Buttons */
+        .btn-delete-card {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease;
+            z-index: 2;
+        }
+
+        .btn-edit-card {
+            position: absolute;
+            top: 10px;
+            right: 44px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease;
+            z-index: 2;
+        }
+
+        .medicine-card:hover .btn-delete-card,
+        .btn-delete-card:focus,
+        .medicine-card:hover .btn-edit-card,
+        .btn-edit-card:focus {
+            opacity: 1;
+        }
+
+        .btn-delete-card:hover {
+            background: var(--accent-red);
+        }
+
+        .btn-edit-card:hover {
+            background: var(--accent-blue);
+        }
+
+        @media (max-width: 768px) {
+            .btn-delete-card,
+            .btn-edit-card {
+                opacity: 0.8;
+            }
+        }
+
+        /* Custom Toast Notification */
+        .toast-notification {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.85);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 100;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        .toast-notification.active {
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (prefers-color-scheme: dark) {
+            .toast-notification {
+                background: rgba(255, 255, 255, 0.95);
+                color: #000000;
+            }
+        }
+
+        /* Elegant Modal Backdrop System */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 16px;
+        }
+
+        /* Explicit Z-Index Stack Order */
+        #add-medicine-modal { z-index: 10; }
+        #manage-parameters-modal { z-index: 15; } /* Higher stack, overlays on top of form! */
+        #custom-dialog-modal { z-index: 20; } /* Topmost layer */
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Apple style Sheet/Modal */
+        .modal-sheet {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-sheet::before {
+            content: '';
+            width: 36px;
+            height: 5px;
+            background: var(--border-color);
+            border-radius: 3px;
+            align-self: center;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        .modal-overlay.active .modal-sheet {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            background: var(--card-nested);
+            border: none;
+            color: var(--text-secondary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Styled Forms */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding-left: 4px;
+        }
+
+        .form-control {
+            background: var(--card-nested);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+            width: 100%;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-blue);
+        }
+
+        /* Photo Uploader Utility */
+        .photo-uploader {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: var(--card-nested);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .photo-uploader:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0, 113, 227, 0.02);
+        }
+
+        .photo-uploader input[type="file"] {
+            display: none;
+        }
+
+        .uploader-preview {
+            width: 100%;
+            height: 160px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            position: relative;
+        }
+
+        .uploader-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .uploader-preview .btn-remove-photo {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* Location Manager List */
+        .location-manager-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 12px;
+            background: var(--card-nested);
+        }
+
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .location-item span {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-delete-loc {
+            background: transparent;
+            border: none;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 6px;
+            transition: opacity 0.2s ease;
+        }
+        .btn-delete-loc:active {
+            opacity: 0.5;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--card-nested);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: background 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            border: none;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-primary:active, .btn-secondary:active {
+            opacity: 0.8;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- App Title -->
+        <header>
+            <div class="header-left">
+                <h1>佳音的智能药箱</h1>
+                <p>宝贝要身体健健康康的哦！</p>
+            </div>
+            <button class="btn-add" id="btn-open-add-modal">
+                <i class="fa-solid fa-plus"></i> 新增药品
+            </button>
+        </header>
+
+        <!-- Segmented Location Tabs -->
+        <section class="location-section">
+            <div class="location-tabs" id="location-tabs-container">
+                <!-- Location buttons will render here -->
+            </div>
+            <button class="btn-manage-loc" id="btn-open-param-modal" title="参数管理中心">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </section>
+
+        <!-- Dynamic Statistics Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="value" id="stat-total">0</div>
+                <div class="label">在库总量</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" style="color: var(--accent-orange);" id="stat-warning">0</div>
+                <div class="label">即将过期</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" style="color: var(--accent-green);" id="stat-safe">0</div>
+                <div class="label">安全在保</div>
+            </div>
+        </section>
+
+        <!-- Medicines Grid -->
+        <main class="medicine-grid" id="medicine-grid-container">
+            <!-- Medicine cards will render dynamically -->
+        </main>
+    </div>
+
+    <!-- MODAL 1: Add/Edit Medicine -->
+    <div class="modal-overlay" id="add-medicine-modal">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h2 id="modal-title-text">添加药品信息</h2>
+                <button class="btn-close" onclick="closeModal('add-medicine-modal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="med-name-input">药品名称</label>
+                    <input type="text" id="med-name-input" class="form-control" placeholder="输入名称，如：小柴胡">
+                </div>
+
+                <!-- Type -->
+                <div class="form-group">
+                    <label for="med-type-input">药品性状</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select id="med-type-input" class="form-control" style="flex: 1;">
+                            <!-- Populated Dynamically -->
+                        </select>
+                        <button class="btn-inline-manage" type="button" onclick="openParamModalDirectly('type')" title="管理分类性状">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Effect -->
+                <div class="form-group">
+                    <label for="med-effect-input">治疗效果 (药效)</label>
+                    <input type="text" id="med-effect-input" class="form-control" placeholder="例如：感冒退热、痤疮、过敏">
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="form-group">
+                    <label for="med-expiry-input">有效期至</label>
+                    <input type="month" id="med-expiry-input" class="form-control">
+                </div>
+
+                <!-- Storage Location -->
+                <div class="form-group">
+                    <label for="med-location-input">存放位置</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select id="med-location-input" class="form-control" style="flex: 1;">
+                            <!-- Populated Dynamically -->
+                        </select>
+                        <button class="btn-inline-manage" type="button" onclick="openParamModalDirectly('location')" title="管理存放位置">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Add Photo -->
+                <div class="form-group">
+                    <label>添加药品照片</label>
+                    <div class="photo-uploader" id="photo-uploader-trigger">
+                        <i class="fa-solid fa-camera" style="font-size: 24px; color: var(--accent-blue);"></i>
+                        <span style="font-size: 13px; font-weight: 500;">点击拍照或选择照片</span>
+                        <input type="file" id="med-photo-input" accept="image/*">
+                    </div>
+                    <div class="uploader-preview" id="photo-preview-box">
+                        <img id="photo-preview-img" src="" alt="预览">
+                        <button class="btn-remove-photo" id="btn-remove-photo">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('add-medicine-modal')">取消</button>
+                <button class="btn-primary" id="btn-save-medicine">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Manage Parameters (Locations & Types) -->
+    <!-- Note: Stacked over form with z-index: 15 -->
+    <div class="modal-overlay" id="manage-parameters-modal">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h2>参数管理设置</h2>
+                <button class="btn-close" onclick="closeModal('manage-parameters-modal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Segment Tab Selector -->
+                <div class="location-tabs" style="width: 100%; margin-bottom: 8px;">
+                    <button class="tab-btn active" id="btn-switch-loc" style="flex: 1;">存放位置</button>
+                    <button class="tab-btn" id="btn-switch-type" style="flex: 1;">药品性状</button>
+                </div>
+
+                <!-- Parameter Add Form -->
+                <div class="form-group" style="flex-direction: row; gap: 10px;">
+                    <input type="text" id="new-param-input" class="form-control" placeholder="输入新位置名称">
+                    <button class="btn-add" id="btn-add-new-param" style="height: 46px; flex-shrink:0;">添加</button>
+                </div>
+
+                <!-- Parameters List -->
+                <div class="form-group">
+                    <label id="param-list-label">已有位置列表</label>
+                    <div class="location-manager-list" id="param-manager-list">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="width: 100%;" onclick="closeModal('manage-parameters-modal')">完成</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Custom Elegant Confirm Dialog (z-index: 20) -->
+    <div class="modal-overlay" id="custom-dialog-modal">
+        <div class="modal-sheet" style="max-width: 320px; border-radius: 20px;">
+            <div class="modal-body" style="text-align: center; padding: 24px 20px 16px;">
+                <h3 id="dialog-title" style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">提示</h3>
+                <p id="dialog-message" style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;"></p>
+            </div>
+            <div style="display: flex; border-top: 1px solid var(--border-color);">
+                <button id="dialog-cancel-btn" style="flex: 1; border: none; background: transparent; padding: 12px; font-weight: 400; font-size: 15px; color: var(--text-secondary); cursor: pointer; border-right: 1px solid var(--border-color); outline: none;">取消</button>
+                <button id="dialog-confirm-btn" style="flex: 1; border: none; background: transparent; color: var(--accent-red); padding: 12px; font-weight: 600; font-size: 15px; cursor: pointer; outline: none;">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Global Toast -->
+    <div id="custom-toast" class="toast-notification">提示内容</div>
+
+    <script>
+        // --- 1. INITIAL SYSTEM STATE & FALLBACK DEMO DATA ---
+        let currentFilterLocation = "全部";
+        let uploadedImageBase64 = null;
+        let editingMedId = null;
+        let currentManageTab = "location"; // "location" or "type"
+
+        // Default Locations & Types
+        const defaultLocations = ["家里", "公司", "随身包"];
+        const defaultTypes = ["片剂", "胶囊", "乳膏/凝胶", "颗粒/冲剂", "液体/药水", "其他"];
+
+        // Dynamic Expiry Calculation Base: 2026.07
+        const currentYear = 2026;
+        const currentMonth = 7;
+
+        // Fallback Initial Demo Medicines
+        const demoMedicines = [
+            { id: "1", name: "小柴胡", type: "颗粒/冲剂", effect: "感冒退热", expiry: "2026-11", location: "家里", photo: null },
+            { id: "2", name: "头孢拉丁", type: "胶囊", effect: "消炎抗生素", expiry: "2027-01", location: "公司", photo: null },
+            { id: "3", name: "盐酸米诺环素胶囊", type: "胶囊", effect: "痤疮治疗", expiry: "2027-04", location: "家里", photo: null },
+            { id: "4", name: "依巴斯汀片", type: "片剂", effect: "抗过敏、抗组胺", expiry: "2027-12", location: "随身包", photo: null },
+            { id: "5", name: "999 感冒灵", type: "颗粒/冲剂", effect: "感冒发热", expiry: "2026-07", location: "公司", photo: null },
+            { id: "6", name: "整肠生", type: "胶囊", effect: "调节肠道菌群", expiry: "2027-04", location: "家里", photo: null }
+        ];
+
+        let state = {
+            medicines: JSON.parse(localStorage.getItem('med_list')) || demoMedicines,
+            locations: JSON.parse(localStorage.getItem('loc_list')) || defaultLocations,
+            types: JSON.parse(localStorage.getItem('type_list')) || defaultTypes
+        };
+
+        // Save state helper
+        function saveStateToLocal() {
+            localStorage.setItem('med_list', JSON.stringify(state.medicines));
+            localStorage.setItem('loc_list', JSON.stringify(state.locations));
+            localStorage.setItem('type_list', JSON.stringify(state.types));
+        }
+
+        // Custom UI Dialog helpers instead of standard alert/confirm
+        function showToast(msg) {
+            const toast = document.getElementById('custom-toast');
+            toast.innerText = msg;
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 2500);
+        }
+
+        function showConfirm(title, message, onConfirm, onCancel) {
+            const dialog = document.getElementById('custom-dialog-modal');
+            const titleEl = document.getElementById('dialog-title');
+            const msgEl = document.getElementById('dialog-message');
+            const confirmBtn = document.getElementById('dialog-confirm-btn');
+            const cancelBtn = document.getElementById('dialog-cancel-btn');
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            dialog.classList.add('active');
+
+            confirmBtn.onclick = () => {
+                dialog.classList.remove('active');
+                if (onConfirm) onConfirm();
+            };
+            cancelBtn.onclick = () => {
+                dialog.classList.remove('active');
+                if (onCancel) onCancel();
+            };
+        }
+
+        // --- 2. EXPIRY HELPER LOGIC ---
+        function getExpiryStatus(expiryStr) {
+            if (!expiryStr) return { label: "无日期", color: "var(--text-secondary)", statusClass: "status-safe", percent: 100 };
+            
+            const [year, month] = expiryStr.split('-').map(Number);
+            const remainingMonths = (year - currentYear) * 12 + (month - currentMonth);
+
+            if (remainingMonths < 0) {
+                return { label: "已过期", color: "var(--accent-red)", statusClass: "status-expired", percent: 0 };
+            } else if (remainingMonths <= 3) {
+                const percent = Math.max(10, (remainingMonths / 12) * 100);
+                return { label: "临近过期", color: "var(--accent-orange)", statusClass: "status-warning", percent: percent };
+            } else {
+                const percent = Math.min(100, (remainingMonths / 24) * 100);
+                return { label: "安全在保", color: "var(--accent-green)", statusClass: "status-safe", percent: percent };
+            }
+        }
+
+        // Map type to icons dynamically using smart fuzzy-match
+        const iconMap = {
+            "片剂": "fa-tablets",
+            "药片": "fa-tablets",
+            "胶囊": "fa-capsules",
+            "乳膏/凝胶": "fa-pump-medical",
+            "乳膏": "fa-pump-medical",
+            "凝胶": "fa-pump-medical",
+            "药膏": "fa-pump-medical",
+            "喷雾": "fa-spray-can",
+            "颗粒/冲剂": "fa-mortar-pestle",
+            "冲剂": "fa-mortar-pestle",
+            "颗粒": "fa-mortar-pestle",
+            "液体/药水": "fa-prescription-bottle-medical",
+            "药水": "fa-prescription-bottle-medical",
+            "液体": "fa-prescription-bottle-medical",
+            "其他": "fa-prescription-bottle"
+        };
+
+        function getIconForType(type) {
+            if (!type) return "fa-prescription-bottle";
+            for (let key in iconMap) {
+                if (type.includes(key)) return iconMap[key];
+            }
+            return "fa-prescription-bottle";
+        }
+
+        // --- 3. UI RENDER ENGINE ---
+
+        // Render Dropdowns and Filter Tabs
+        function renderLocationsUI() {
+            const tabsContainer = document.getElementById('location-tabs-container');
+            const locSelect = document.getElementById('med-location-input');
+            const typeSelect = document.getElementById('med-type-input');
+
+            // Preserve selected values before rebuilding options
+            const currentSelectedLoc = locSelect.value;
+            const currentSelectedType = typeSelect.value;
+
+            // Render filter tabs
+            tabsContainer.innerHTML = '';
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = `tab-btn ${currentFilterLocation === '全部' ? 'active' : ''}`;
+            allBtn.innerText = '全部';
+            allBtn.onclick = () => filterByLocation('全部');
+            tabsContainer.appendChild(allBtn);
+
+            state.locations.forEach(loc => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${currentFilterLocation === loc ? 'active' : ''}`;
+                btn.innerText = loc;
+                btn.onclick = () => filterByLocation(loc);
+                tabsContainer.appendChild(btn);
+            });
+
+            // Rebuild Location Selector inside Form
+            locSelect.innerHTML = '';
+            state.locations.forEach(loc => {
+                const option = document.createElement('option');
+                option.value = loc;
+                option.innerText = loc;
+                locSelect.appendChild(option);
+            });
+            if (state.locations.includes(currentSelectedLoc)) {
+                locSelect.value = currentSelectedLoc;
+            }
+
+            // Rebuild Type Selector inside Form
+            typeSelect.innerHTML = '';
+            state.types.forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.innerText = t;
+                typeSelect.appendChild(option);
+            });
+            if (state.types.includes(currentSelectedType)) {
+                typeSelect.value = currentSelectedType;
+            }
+        }
+
+        // Render Parameters in Management Modal
+        function renderParamsList() {
+            const managerList = document.getElementById('param-manager-list');
+            const listLabel = document.getElementById('param-list-label');
+            const inputField = document.getElementById('new-param-input');
+            
+            managerList.innerHTML = '';
+
+            if (currentManageTab === "location") {
+                listLabel.innerText = "已有位置列表";
+                inputField.placeholder = "输入新位置名称，如：冷藏室";
+                
+                state.locations.forEach(loc => {
+                    const item = document.createElement('div');
+                    item.className = 'location-item';
+                    item.innerHTML = `
+                        <span><i class="fa-solid fa-location-dot" style="color:var(--accent-blue); margin-right:10px;"></i>${loc}</span>
+                        <button class="btn-delete-loc" onclick="deleteParameter('${loc}')" title="删除该位置">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    managerList.appendChild(item);
+                });
+            } else {
+                listLabel.innerText = "已有性状列表";
+                inputField.placeholder = "输入新性状名称，如：滴眼液";
+                
+                state.types.forEach(t => {
+                    const item = document.createElement('div');
+                    item.className = 'location-item';
+                    item.innerHTML = `
+                        <span><i class="fa-solid fa-prescription-bottle" style="color:var(--accent-orange); margin-right:10px;"></i>${t}</span>
+                        <button class="btn-delete-loc" onclick="deleteParameter('${t}')" title="删除该性状">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    managerList.appendChild(item);
+                });
+            }
+        }
+
+        // Render Statistics
+        function renderStatistics() {
+            let total = state.medicines.length;
+            let warning = 0;
+            let safe = 0;
+
+            state.medicines.forEach(med => {
+                const status = getExpiryStatus(med.expiry);
+                if (status.statusClass === 'status-warning' || status.statusClass === 'status-expired') {
+                    warning++;
+                } else {
+                    safe++;
+                }
+            });
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-warning').innerText = warning;
+            document.getElementById('stat-safe').innerText = safe;
+        }
+
+        // Render Main Medicine Grid
+        function renderMedicinesGrid() {
+            const container = document.getElementById('medicine-grid-container');
+            container.innerHTML = '';
+
+            const filteredMeds = currentFilterLocation === "全部" 
+                ? state.medicines 
+                : state.medicines.filter(m => m.location === currentFilterLocation);
+
+            if (filteredMeds.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>该分类下暂无药品记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredMeds.forEach(med => {
+                const status = getExpiryStatus(med.expiry);
+                const displayIcon = getIconForType(med.type);
+
+                const card = document.createElement('div');
+                card.className = 'medicine-card';
+                card.id = `med-card-${med.id}`;
+
+                let imageBlock = '';
+                if (med.photo) {
+                    imageBlock = `
+                        <div class="card-img-wrapper">
+                            <img src="${med.photo}" alt="${med.name}">
+                        </div>
+                    `;
+                } else {
+                    imageBlock = `
+                        <div class="card-img-wrapper">
+                            <div class="card-img-placeholder">
+                                <i class="fa-solid ${displayIcon}"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <button class="btn-edit-card" onclick="editMedicine('${med.id}')" title="编辑药品">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn-delete-card" onclick="deleteMedicine('${med.id}')" title="删除药品">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    ${imageBlock}
+                    <div class="card-content">
+                        <div class="card-header-row">
+                            <span class="type-badge">${med.type || "未分类"}</span>
+                            <span class="location-tag-inline">
+                                <i class="fa-solid fa-location-dot"></i>${med.location || "未分类"}
+                            </span>
+                        </div>
+                        <h2 class="med-name">${med.name}</h2>
+                        <p class="effect-text">${med.effect || "暂无效果描述"}</p>
+                        
+                        <div class="card-footer">
+                            <div class="expiry-row">
+                                <div class="status-badge ${status.statusClass}">
+                                    <span class="dot"></span>${status.label}
+                                </div>
+                                <span>至 ${med.expiry ? med.expiry.replace('-', '.') : '未知'}</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill" style="width: ${status.percent}%; background-color: ${status.color};"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function refreshUI() {
+            renderLocationsUI();
+            renderStatistics();
+            renderMedicinesGrid();
+        }
+
+        // --- 4. ACTION LOGIC FOR CUSTOM VALUES ---
+
+        function filterByLocation(loc) {
+            currentFilterLocation = loc;
+            refreshUI();
+        }
+
+        // Stacked Modal triggers directly from the form dropdown row
+        window.openParamModalDirectly = function(tabName) {
+            currentManageTab = tabName; // "location" or "type"
+            if (currentManageTab === "location") {
+                document.getElementById('btn-switch-loc').classList.add('active');
+                document.getElementById('btn-switch-type').classList.remove('active');
+            } else {
+                document.getElementById('btn-switch-type').classList.add('active');
+                document.getElementById('btn-switch-loc').classList.remove('active');
+            }
+            renderParamsList();
+            openModal('manage-parameters-modal');
+        };
+
+        // Switch settings parameter tabs
+        document.getElementById('btn-switch-loc').onclick = () => {
+            currentManageTab = "location";
+            document.getElementById('btn-switch-loc').classList.add('active');
+            document.getElementById('btn-switch-type').classList.remove('active');
+            renderParamsList();
+        };
+
+        document.getElementById('btn-switch-type').onclick = () => {
+            currentManageTab = "type";
+            document.getElementById('btn-switch-type').classList.add('active');
+            document.getElementById('btn-switch-loc').classList.remove('active');
+            renderParamsList();
+        };
+
+        // Core add new parameter algorithm
+        function triggerAddParam() {
+            const input = document.getElementById('new-param-input');
+            const val = input.value.trim();
+            if (!val) {
+                showToast('输入内容不能为空哦');
+                return;
+            }
+
+            if (currentManageTab === "location") {
+                if (state.locations.includes(val)) {
+                    showToast('该存放位置已存在啦');
+                    return;
+                }
+                state.locations.push(val);
+                showToast(`已成功添加存放位置: ${val}`);
+            } else {
+                if (state.types.includes(val)) {
+                    showToast('该药品性状已存在啦');
+                    return;
+                }
+                state.types.push(val);
+                showToast(`已成功添加药品性状: ${val}`);
+            }
+
+            saveStateToLocal();
+            input.value = '';
+            renderParamsList();
+            renderLocationsUI(); // Dynamic updates to dropdowns
+        }
+
+        // Click or Enter-key events
+        document.getElementById('btn-add-new-param').onclick = triggerAddParam;
+        document.getElementById('new-param-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                triggerAddParam();
+            }
+        });
+
+        // Core delete parameter logic
+        window.deleteParameter = function(val) {
+            if (currentManageTab === "location") {
+                showConfirm(
+                    '确认删除此位置吗？',
+                    `在“${val}”存放的所有药品会被自动归并入“未分类”中。`,
+                    () => {
+                        state.locations = state.locations.filter(l => l !== val);
+                        
+                        state.medicines.forEach(med => {
+                            if (med.location === val) {
+                                med.location = "未分类";
+                            }
+                        });
+
+                        if (!state.locations.includes("未分类")) {
+                            state.locations.push("未分类");
+                        }
+
+                        if (currentFilterLocation === val) {
+                            currentFilterLocation = "全部";
+                        }
+
+                        saveStateToLocal();
+                        refreshUI();
+                        renderParamsList();
+                        showToast('存放位置已成功移除');
+                    }
+                );
+            } else {
+                showConfirm(
+                    '确认删除此性状吗？',
+                    `性状为“${val}”的所有药品会被自动归并入“其他”中。`,
+                    () => {
+                        state.types = state.types.filter(t => t !== val);
+
+                        state.medicines.forEach(med => {
+                            if (med.type === val) {
+                                med.type = "其他";
+                            }
+                        });
+
+                        if (!state.types.includes("其他")) {
+                            state.types.push("其他");
+                        }
+
+                        saveStateToLocal();
+                        refreshUI();
+                        renderParamsList();
+                        showToast('药品性状已成功移除');
+                    }
+                );
+            }
+        };
+
+        // Delete Medicine
+        window.deleteMedicine = function(medId) {
+            showConfirm(
+                '移出药箱吗？',
+                '确认要在您的药箱中移除该药品吗？该操作无法撤销。',
+                () => {
+                    state.medicines = state.medicines.filter(m => m.id !== medId);
+                    saveStateToLocal();
+                    refreshUI();
+                    showToast('药品信息已被移除');
+                }
+            );
+        };
+
+        // Edit Medicine
+        window.editMedicine = function(medId) {
+            const med = state.medicines.find(m => m.id === medId);
+            if (!med) return;
+
+            editingMedId = medId;
+            document.getElementById('modal-title-text').innerText = '修改药品信息';
+
+            document.getElementById('med-name-input').value = med.name;
+            document.getElementById('med-type-input').value = med.type || '其他';
+            document.getElementById('med-effect-input').value = med.effect || '';
+            document.getElementById('med-expiry-input').value = med.expiry || '';
+            document.getElementById('med-location-input').value = med.location || '未分类';
+
+            const fileTrigger = document.getElementById('photo-uploader-trigger');
+            const previewBox = document.getElementById('photo-preview-box');
+            const previewImg = document.getElementById('photo-preview-img');
+
+            if (med.photo) {
+                uploadedImageBase64 = med.photo;
+                previewImg.src = med.photo;
+                previewBox.style.display = 'block';
+                fileTrigger.style.display = 'none';
+            } else {
+                uploadedImageBase64 = null;
+                previewBox.style.display = 'none';
+                fileTrigger.style.display = 'flex';
+                fileInput.value = '';
+            }
+
+            openModal('add-medicine-modal');
+        };
+
+        // File/Photo handler
+        const fileTrigger = document.getElementById('photo-uploader-trigger');
+        const fileInput = document.getElementById('med-photo-input');
+        const previewBox = document.getElementById('photo-preview-box');
+        const previewImg = document.getElementById('photo-preview-img');
+        const removePhotoBtn = document.getElementById('btn-remove-photo');
+
+        fileTrigger.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        const maxDim = 600;
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) {
+                                h = Math.round((h * maxDim) / w);
+                                w = maxDim;
+                            } else {
+                                w = Math.round((w * maxDim) / h);
+                                h = maxDim;
+                            }
+                        }
+                        
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        uploadedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        
+                        previewImg.src = uploadedImageBase64;
+                        previewBox.style.display = 'block';
+                        fileTrigger.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        removePhotoBtn.onclick = () => {
+            uploadedImageBase64 = null;
+            fileInput.value = '';
+            previewBox.style.display = 'none';
+            fileTrigger.style.display = 'flex';
+        };
+
+        // Save Medicine Action (Add / Edit)
+        document.getElementById('btn-save-medicine').onclick = () => {
+            const name = document.getElementById('med-name-input').value.trim();
+            const type = document.getElementById('med-type-input').value;
+            const effect = document.getElementById('med-effect-input').value.trim();
+            const expiry = document.getElementById('med-expiry-input').value;
+            const location = document.getElementById('med-location-input').value;
+
+            if (!name) {
+                showToast('请填写药品名称');
+                return;
+            }
+            if (!expiry) {
+                showToast('请选择保质期/有效期');
+                return;
+            }
+
+            if (editingMedId) {
+                const index = state.medicines.findIndex(m => m.id === editingMedId);
+                if (index !== -1) {
+                    state.medicines[index] = {
+                        ...state.medicines[index],
+                        name,
+                        type,
+                        effect,
+                        expiry,
+                        location,
+                        photo: uploadedImageBase64
+                    };
+                    showToast('药品信息已成功更新');
+                }
+                editingMedId = null;
+            } else {
+                const newMedicine = {
+                    id: Date.now().toString(),
+                    name,
+                    type,
+                    effect,
+                    expiry,
+                    location,
+                    photo: uploadedImageBase64
+                };
+
+                state.medicines.unshift(newMedicine);
+                showToast('新药品已录入存放在' + location);
+            }
+
+            saveStateToLocal();
+            closeModal('add-medicine-modal');
+            refreshUI();
+
+            document.getElementById('med-name-input').value = '';
+            document.getElementById('med-effect-input').value = '';
+            document.getElementById('med-expiry-input').value = '';
+            uploadedImageBase64 = null;
+            previewBox.style.display = 'none';
+            fileTrigger.style.display = 'flex';
+            fileInput.value = '';
+        };
+
+        // --- 5. MODAL TRIGGER CONTROLS ---
+        window.openModal = function(id) {
+            document.getElementById(id).classList.add('active');
+        };
+
+        window.closeModal = function(id) {
+            document.getElementById(id).classList.remove('active');
+        };
+
+        document.getElementById('btn-open-add-modal').onclick = () => {
+            editingMedId = null;
+            document.getElementById('modal-title-text').innerText = '添加药品信息';
+            
+            document.getElementById('med-name-input').value = '';
+            document.getElementById('med-effect-input').value = '';
+            document.getElementById('med-expiry-input').value = '';
+            uploadedImageBase64 = null;
+            previewBox.style.display = 'none';
+            fileTrigger.style.display = 'flex';
+            fileInput.value = '';
+
+            openModal('add-medicine-modal');
+        };
+
+        document.getElementById('btn-open-param-modal').onclick = () => {
+            openParamModalDirectly('location');
+        };
+
+        // Boot-up initialization
+        refreshUI();
+    </script>
+</body>
+</html>
