@@ -17,6 +17,7 @@
             --accent-green: #34c759;
             --accent-orange: #ff9500;
             --accent-red: #ff3b30;
+            --accent-yellow: #ffcc00;
             --border-color: rgba(0, 0, 0, 0.05);
             --border-radius: 20px;
             --blur-val: 20px;
@@ -178,7 +179,7 @@
             display: none;
         }
 
-        /* Storage Location Segment Menu (iOS style) */
+        /* Storage Location Segment Menu */
         .location-section {
             display: flex;
             align-items: center;
@@ -231,7 +232,7 @@
             width: 100%;
             overflow-x: auto;
             padding: 4px 8px;
-            margin-top: -8px; /* Pull closer to location tabs */
+            margin-top: -8px;
             scrollbar-width: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -309,7 +310,7 @@
             font-weight: 500;
         }
 
-        /* Medicines Grid */
+        /* Medicines Grid (PC & iPad) */
         .medicine-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -388,6 +389,28 @@
         .med-name { font-size: 18px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
         .effect-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
 
+        /* Rating Stars Rendering in Card */
+        .med-rating-stars {
+            display: flex;
+            gap: 2px;
+            color: var(--accent-yellow);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* Note container inside Card */
+        .med-note-box {
+            background: var(--card-nested);
+            border-left: 3px solid var(--accent-blue);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
         .card-footer { border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: auto; }
 
         .expiry-row {
@@ -441,8 +464,79 @@
         .btn-delete-card:hover { background: var(--accent-red); }
         .btn-edit-card:hover { background: var(--accent-blue); }
 
-        @media (max-width: 768px) {
-            .btn-delete-card, .btn-edit-card { opacity: 0.8; }
+        @media (max-width: 480px) {
+            .medicine-grid {
+                grid-template-columns: repeat(2, 1fr); /* 手机端高密度双列 */
+                gap: 10px;
+            }
+            .medicine-card {
+                border-radius: 14px;
+            }
+            .card-img-wrapper {
+                height: 80px; /* 极简微图 */
+            }
+            .card-img-placeholder {
+                font-size: 28px;
+            }
+            .card-content {
+                padding: 10px; /* 超紧凑内边距 */
+            }
+            .card-header-row {
+                margin-bottom: 6px;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .type-badge, .location-tag-inline {
+                font-size: 9px;
+                padding: 2px 6px;
+                border-radius: 8px;
+            }
+            .med-name {
+                font-size: 14px;
+                font-weight: 700;
+                margin-bottom: 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .effect-text {
+                font-size: 11px;
+                margin-bottom: 6px;
+                display: -webkit-box;
+                -webkit-line-clamp: 1; /* 仅单行显示效果 */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .med-rating-stars {
+                font-size: 9px;
+                margin-bottom: 4px;
+            }
+            .med-note-box {
+                font-size: 10px;
+                padding: 4px 6px;
+                margin-bottom: 6px;
+                border-left-width: 2px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* 限制备注仅展示2行，防高度失控 */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .card-footer {
+                padding-top: 6px;
+            }
+            .expiry-row {
+                font-size: 10px;
+                margin-bottom: 4px;
+            }
+            .btn-delete-card, .btn-edit-card {
+                opacity: 0.8;
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+                top: 6px;
+            }
+            .btn-delete-card { right: 6px; }
+            .btn-edit-card { right: 34px; }
         }
 
         /* Elegant Modals Framework */
@@ -555,6 +649,25 @@
             transition: border-color 0.2s ease;
         }
         .form-control:focus { border-color: var(--accent-blue); }
+
+        /* Rating input interactive styles */
+        .rating-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+        .star-input {
+            cursor: pointer;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+        .star-input.active {
+            color: var(--accent-yellow);
+        }
+        .star-input:active {
+            transform: scale(0.85);
+        }
 
         .btn-form-gear {
             background: var(--card-nested);
@@ -687,7 +800,7 @@
             -webkit-backdrop-filter: blur(12px);
             z-index: 30;
             display: flex;
-            justify-content: flex-end; /* Slides in from right on desktop, bottom on mobile */
+            justify-content: flex-end;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -932,7 +1045,7 @@
         <!-- App Title -->
         <header>
             <div class="header-left">
-                <h1>JiaYing的智能药箱</h1>
+                <h1>JiaYin的智能药箱</h1>
                 <p>宝贝要身体健健康康的哦！</p>
             </div>
             <div class="header-actions">
@@ -949,7 +1062,7 @@
         <section class="search-container">
             <div class="search-wrapper">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" class="search-input" placeholder="搜索药品、功效或位置（支持“家里 感冒”多词联搜）">
+                <input type="text" id="search-input" class="search-input" placeholder="搜索药品、功效、位置、备注或评分">
                 <button id="search-clear-btn" class="search-clear-btn">
                     <i class="fa-solid fa-circle-xmark"></i>
                 </button>
@@ -1068,6 +1181,25 @@
                     <input type="text" id="med-effect-input" class="form-control" placeholder="例如：感冒退热、痤疮、过敏">
                 </div>
 
+                <!-- Rating Selector -->
+                <div class="form-group">
+                    <label>药效评分 / 推荐指数 (选填)</label>
+                    <div class="rating-input-wrapper" id="rating-input-container">
+                        <span class="star-input" data-value="1"><i class="fa-regular fa-star"></i></span>
+                        <span class="star-input" data-value="2"><i class="fa-regular fa-star"></i></span>
+                        <span class="star-input" data-value="3"><i class="fa-regular fa-star"></i></span>
+                        <span class="star-input" data-value="4"><i class="fa-regular fa-star"></i></span>
+                        <span class="star-input" data-value="5"><i class="fa-regular fa-star"></i></span>
+                        <span id="rating-clear-btn" style="margin-left: 8px; font-size: 11px; color: var(--accent-red); cursor: pointer; display: none;">清除评分</span>
+                    </div>
+                </div>
+
+                <!-- Custom Remarks (Optional) -->
+                <div class="form-group">
+                    <label for="med-notes-input">用药备注 / 医嘱备忘 (选填)</label>
+                    <textarea id="med-notes-input" class="form-control" placeholder="例如：每次一袋，一日三次；峻铖说饭后服用" rows="2" style="resize: none; font-family: inherit;"></textarea>
+                </div>
+
                 <div class="form-group">
                     <label for="med-expiry-input">有效期至</label>
                     <input type="month" id="med-expiry-input" class="form-control">
@@ -1107,7 +1239,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: Manage Parameters (Stacked Modal Support) -->
+    <!-- MODAL 2: Manage Parameters -->
     <div class="modal-overlay" id="manage-parameters-modal" style="z-index: 15;">
         <div class="modal-sheet">
             <div class="modal-header">
@@ -1160,16 +1292,16 @@
     <script>
         // --- 1. INITIAL SYSTEM STATE & FALLBACK DEMO DATA ---
         let currentFilterLocation = "全部";
-        let currentFilterSymptom = "全部"; // New secondary state tracker
+        let currentFilterSymptom = "全部";
         let currentSearchQuery = "";
         let uploadedImageBase64 = null;
         let editingMedId = null;
-        let currentManageTab = "location"; // "location" or "type"
+        let currentManageTab = "location";
+        let tempSelectedRating = 0; // State variable for modal star inputs
 
         const defaultLocations = ["家里", "公司", "随身包"];
         const defaultTypes = ["片剂", "胶囊", "乳膏/凝胶", "颗粒/冲剂", "液体/药水", "其他"];
 
-        // Dynamic clinical symptom categories with premium icons
         const symptomCategories = [
             { key: "感冒发热", keywords: ["感冒", "发热", "发烧", "退热", "退烧", "少阳", "柴胡", "感冒灵"], emoji: "🤒" },
             { key: "消炎杀菌", keywords: ["消炎", "抗生素", "发炎", "头孢", "林可霉素"], emoji: "🛡️" },
@@ -1181,23 +1313,22 @@
             { key: "肠胃调理", keywords: ["肠胃", "腹泻", "拉肚子", "胀气", "胃", "肠", "整肠生"], emoji: "🤢" }
         ];
 
-        // System Expiry calculation reference base: 2026.07
         const currentYear = 2026;
         const currentMonth = 7;
 
-        // Structured initial medicines matching user's sheet
+        // Expanded Mock Data with notes and ratings integrated
         const demoMedicines = [
-            { id: "1", name: "小柴胡", type: "颗粒/冲剂", effect: "感冒退热、和解少阳", expiry: "2026-11", location: "家里", photo: null },
-            { id: "2", name: "头孢拉丁", type: "胶囊", effect: "消炎抗生素", expiry: "2027-01", location: "家里", photo: null },
-            { id: "3", name: "盐酸米诺环素胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2027-04", location: "家里", photo: null },
-            { id: "4", name: "盐酸多西环素肠溶胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2028-08", location: "家里", photo: null },
-            { id: "5", name: "依巴斯汀片", type: "片剂", effect: "抗过敏、荨麻疹", expiry: "2027-12", location: "家里", photo: null },
-            { id: "6", name: "盐酸氨溴索分散片", type: "片剂", effect: "止咳祛痰", expiry: "2026-09", location: "家里", photo: null },
-            { id: "7", name: "999 感冒灵", type: "颗粒/冲剂", effect: "感冒发热、头痛鼻塞", expiry: "2026-07", location: "家里", photo: null },
-            { id: "8", name: "艾瑞昔布片", type: "片剂", effect: "关节疼痛、消炎镇痛", expiry: "2028-04", location: "家里", photo: null },
-            { id: "9", name: "阿昔洛韦乳膏", type: "乳膏/凝胶", effect: "单纯疱疹、带状疱疹", expiry: "2027-07", location: "家里", photo: null },
-            { id: "10", name: "盐酸林可霉素凝胶", type: "乳膏/凝胶", effect: "轻度烧伤、消炎止痒", expiry: "2026-08", location: "家里", photo: null },
-            { id: "11", name: "整肠生", type: "胶囊", effect: "肠胃调理、腹泻胀气", expiry: "2027-04", location: "家里", photo: null }
+            { id: "1", name: "小柴胡", type: "颗粒/冲剂", effect: "感冒退热、和解少阳", expiry: "2026-11", location: "家里", photo: null, notes: "一日三次，温水冲服，峻铖说药效很温和", rating: 5 },
+            { id: "2", name: "头孢拉丁", type: "胶囊", effect: "消炎抗生素", expiry: "2027-01", location: "家里", photo: null, notes: "抗生素，遵医嘱按时服用，吃完绝不可饮酒", rating: 4 },
+            { id: "3", name: "盐酸米诺环素胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2027-04", location: "家里", photo: null, notes: "治疗痘痘，每天晚餐后吃一粒", rating: 4 },
+            { id: "4", name: "盐酸多西环素肠溶胶囊", type: "胶囊", effect: "痤疮、消炎", expiry: "2028-08", location: "家里", photo: null, notes: "午餐后吃，防光敏，吃药期间注意防晒", rating: 5 },
+            { id: "5", name: "依巴斯汀片", type: "片剂", effect: "抗过敏、荨麻疹", expiry: "2027-12", location: "家里", photo: null, notes: "每天睡前吃一粒，吃了会有睡意", rating: 5 },
+            { id: "6", name: "盐酸氨溴索分散片", type: "片剂", effect: "止咳祛痰", expiry: "2026-09", location: "家里", photo: null, notes: "饭后服用，溶水或吞服都可以", rating: 3 },
+            { id: "7", name: "999 感冒灵", type: "颗粒/冲剂", effect: "感冒发热、头痛鼻塞", expiry: "2026-07", location: "家里", photo: null, notes: "中西药混剂，有退热药成分，不与其它感冒药叠加", rating: 5 },
+            { id: "8", name: "艾瑞昔布片", type: "片剂", effect: "关节疼痛、消炎镇痛", expiry: "2028-04", location: "家里", photo: null, notes: "消炎止痛药，对胃粘膜有刺激，必须饭后吃", rating: 4 },
+            { id: "9", name: "阿昔洛韦乳膏", type: "乳膏/凝胶", effect: "单纯疱疹、带状疱疹", expiry: "2027-07", location: "家里", photo: null, notes: "涂抹于患处，一日4-6次", rating: 4 },
+            { id: "10", name: "盐酸林可霉素凝胶", type: "乳膏/凝胶", effect: "轻度烧伤、消炎止痒", expiry: "2026-08", location: "家里", photo: null, notes: "消炎镇痒效果好", rating: 3 },
+            { id: "11", name: "整肠生", type: "胶囊", effect: "肠胃调理、腹泻胀气", expiry: "2027-04", location: "家里", photo: null, notes: "调理肠胃，温水送服（水温不可过烫）", rating: 5 }
         ];
 
         let state = {
@@ -1314,13 +1445,11 @@
             const container = document.getElementById('symptom-section-container');
             container.innerHTML = '';
 
-            // Get medicines matching location first
             let medsInLocation = state.medicines;
             if (currentFilterLocation !== "全部") {
                 medsInLocation = state.medicines.filter(m => m.location === currentFilterLocation);
             }
 
-            // Extract unique symptoms represented in current location's medicines
             const representedSymptoms = new Set();
             medsInLocation.forEach(med => {
                 const searchString = ((med.name || "") + " " + (med.effect || "")).toLowerCase();
@@ -1332,21 +1461,18 @@
                 });
             });
 
-            // If no matched symptoms found across inventory, hide container
             if (representedSymptoms.size === 0) {
                 container.style.display = 'none';
                 return;
             }
             container.style.display = 'flex';
 
-            // 1. Render "All Symptoms" Pill
             const allPill = document.createElement('button');
             allPill.className = `symptom-pill ${currentFilterSymptom === '全部' ? 'active' : ''}`;
             allPill.innerHTML = `✨ 全部症状`;
             allPill.onclick = () => filterBySymptom('全部');
             container.appendChild(allPill);
 
-            // 2. Render matched symptom categories in order
             symptomCategories.forEach(cat => {
                 if (representedSymptoms.has(cat.key)) {
                     const pill = document.createElement('button');
@@ -1399,12 +1525,10 @@
         function getFilteredMedicines() {
             let list = state.medicines;
 
-            // 1. Filter by Location Segment Tab
             if (currentFilterLocation !== "全部") {
                 list = list.filter(m => m.location === currentFilterLocation);
             }
 
-            // 2. Filter by Dynamic Symptom Pill
             if (currentFilterSymptom !== "全部") {
                 const targetCategory = symptomCategories.find(c => c.key === currentFilterSymptom);
                 if (targetCategory) {
@@ -1415,15 +1539,22 @@
                 }
             }
 
-            // 3. Filter by Search Query
             if (currentSearchQuery.trim() !== "") {
                 const keywords = currentSearchQuery.toLowerCase().trim().split(/\s+/);
                 list = list.filter(med => {
                     return keywords.every(kw => {
+                        // Check if rating number is searched (e.g. "5星", "5 star", "5")
+                        const isRatingSearch = kw.includes("星") || kw.includes("star");
+                        const cleanKw = kw.replace(/[星star]/g, "").trim();
+                        const ratingMatch = (isRatingSearch && cleanKw && med.rating && med.rating.toString() === cleanKw) || 
+                                            (!isRatingSearch && med.rating && med.rating.toString() === kw);
+
                         return (med.name && med.name.toLowerCase().includes(kw)) ||
                                (med.effect && med.effect.toLowerCase().includes(kw)) ||
                                (med.type && med.type.toLowerCase().includes(kw)) ||
-                               (med.location && med.location.toLowerCase().includes(kw));
+                               (med.location && med.location.toLowerCase().includes(kw)) ||
+                               (med.notes && med.notes.toLowerCase().includes(kw)) ||
+                               ratingMatch;
                     });
                 });
             }
@@ -1455,7 +1586,7 @@
             container.innerHTML = '';
 
             const filteredMeds = getFilteredMedicines();
-            renderStatistics(filteredMeds); // sync stats
+            renderStatistics(filteredMeds);
 
             if (filteredMeds.length === 0) {
                 container.innerHTML = `
@@ -1479,6 +1610,31 @@
                     ? `<div class="card-img-wrapper"><img src="${med.photo}" alt="${med.name}"></div>`
                     : `<div class="card-img-wrapper"><div class="card-img-placeholder"><i class="fa-solid ${displayIcon}"></i></div></div>`;
 
+                // Star rendering logic
+                let starsHtml = '';
+                if (med.rating && med.rating > 0) {
+                    starsHtml = '<div class="med-rating-stars">';
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= med.rating) {
+                            starsHtml += '<i class="fa-solid fa-star"></i>';
+                        } else {
+                            starsHtml += '<i class="fa-regular fa-star"></i>';
+                        }
+                    }
+                    starsHtml += '</div>';
+                }
+
+                // Note rendering logic
+                let noteHtml = '';
+                if (med.notes && med.notes.trim() !== "") {
+                    noteHtml = `
+                        <div class="med-note-box" title="${med.notes}">
+                            <i class="fa-solid fa-pen-nib" style="margin-right: 4px; color: var(--accent-blue); font-size:10px;"></i>
+                            <span>${med.notes}</span>
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <button class="btn-edit-card" onclick="editMedicine('${med.id}')" title="编辑药品">
                         <i class="fa-solid fa-pen"></i>
@@ -1496,6 +1652,9 @@
                         </div>
                         <h2 class="med-name">${med.name}</h2>
                         <p class="effect-text">${med.effect || "暂无效果描述"}</p>
+                        
+                        ${starsHtml}
+                        ${noteHtml}
                         
                         <div class="card-footer">
                             <div class="expiry-row">
@@ -1516,7 +1675,7 @@
 
         function refreshUI() {
             renderLocationsUI();
-            renderSymptomFilterRow(); // Updates symptom row dynamically
+            renderSymptomFilterRow();
             renderMedicinesGrid();
         }
 
@@ -1546,11 +1705,10 @@
 
         function filterByLocation(loc) {
             currentFilterLocation = loc;
-            currentFilterSymptom = "全部"; // Reset secondary filter when location switches to avoid lock state
+            currentFilterSymptom = "全部";
             refreshUI();
         }
 
-        // Action when symptom pill gets clicked
         function filterBySymptom(symptomKey) {
             currentFilterSymptom = symptomKey;
             renderSymptomFilterRow();
@@ -1659,6 +1817,41 @@
             );
         };
 
+        // Interactive Star Rating Logic in Form
+        const starElements = document.querySelectorAll('.star-input');
+        const ratingClearBtn = document.getElementById('rating-clear-btn');
+
+        starElements.forEach(star => {
+            star.onclick = () => {
+                const val = parseInt(star.getAttribute('data-value'));
+                setFormRatingState(val);
+            };
+        });
+
+        ratingClearBtn.onclick = () => {
+            setFormRatingState(0);
+        };
+
+        function setFormRatingState(ratingVal) {
+            tempSelectedRating = ratingVal;
+            starElements.forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-value'));
+                if (starVal <= ratingVal) {
+                    star.classList.add('active');
+                    star.innerHTML = '<i class="fa-solid fa-star"></i>';
+                } else {
+                    star.classList.remove('active');
+                    star.innerHTML = '<i class="fa-regular fa-star"></i>';
+                }
+            });
+
+            if (ratingVal > 0) {
+                ratingClearBtn.style.display = 'inline-block';
+            } else {
+                ratingClearBtn.style.display = 'none';
+            }
+        }
+
         window.editMedicine = function(medId) {
             const med = state.medicines.find(m => m.id === medId);
             if (!med) return;
@@ -1671,6 +1864,10 @@
             document.getElementById('med-effect-input').value = med.effect || '';
             document.getElementById('med-expiry-input').value = med.expiry || '';
             document.getElementById('med-location-input').value = med.location || '未分类';
+            
+            // Prefill Notes & Rating
+            document.getElementById('med-notes-input').value = med.notes || '';
+            setFormRatingState(med.rating || 0);
 
             const fileTrigger = document.getElementById('photo-uploader-trigger');
             const previewBox = document.getElementById('photo-preview-box');
@@ -1746,6 +1943,8 @@
             const effect = document.getElementById('med-effect-input').value.trim();
             const expiry = document.getElementById('med-expiry-input').value;
             const location = document.getElementById('med-location-input').value;
+            const notes = document.getElementById('med-notes-input').value.trim();
+            const rating = tempSelectedRating;
 
             if (!name) { showToast('请填写药品名称'); return; }
             if (!expiry) { showToast('请选择保质期/有效期'); return; }
@@ -1755,7 +1954,7 @@
                 if (index !== -1) {
                     state.medicines[index] = {
                         ...state.medicines[index],
-                        name, type, effect, expiry, location,
+                        name, type, effect, expiry, location, notes, rating,
                         photo: uploadedImageBase64
                     };
                     showToast('药品信息已修改');
@@ -1764,7 +1963,7 @@
             } else {
                 const newMedicine = {
                     id: Date.now().toString(),
-                    name, type, effect, expiry, location,
+                    name, type, effect, expiry, location, notes, rating,
                     photo: uploadedImageBase64
                 };
                 state.medicines.unshift(newMedicine);
@@ -1775,9 +1974,12 @@
             closeModal('add-medicine-modal');
             refreshUI();
 
+            // Clear state and fields
             document.getElementById('med-name-input').value = '';
             document.getElementById('med-effect-input').value = '';
             document.getElementById('med-expiry-input').value = '';
+            document.getElementById('med-notes-input').value = '';
+            setFormRatingState(0);
             uploadedImageBase64 = null;
             previewBox.style.display = 'none';
             fileTrigger.style.display = 'flex';
@@ -1786,7 +1988,6 @@
 
         // --- 6. AI ASSISTANT CLINICAL LOGIC ---
 
-        // Clinical Mapping Dictionary for zero-key local diagnosis
         const symptomDictionary = {
             "感冒": ["感冒", "发热", "发烧", "头痛", "鼻塞", "流涕", "打喷嚏", "咳嗽", "咳", "祛痰", "退烧", "冷", "寒", "柴胡", "999", "退热"],
             "消炎": ["消炎", "阿莫西林", "头孢", "头孢拉丁", "发炎", "细菌", "抗生素", "红肿"],
@@ -1797,7 +1998,6 @@
             "肠胃": ["拉肚子", "腹泻", "胀气", "胃", "肠", "整肠生", "肚子疼", "稀", "菌群"]
         };
 
-        // Siri triggers and dialog simulation
         document.getElementById('btn-open-ai').onclick = () => {
             openModal('ai-assistant-overlay');
         };
@@ -1817,14 +2017,12 @@
             const query = inputField.value.trim();
             if (!query) return;
 
-            // Hide presets on first query
             document.getElementById('ai-presets-box').style.display = 'none';
             document.getElementById('ai-init-msg').style.display = 'none';
             
             const logContainer = document.getElementById('ai-conversation-log');
             logContainer.style.display = 'flex';
 
-            // 1. Render User Message
             const userMsg = document.createElement('div');
             userMsg.className = 'chat-bubble user';
             userMsg.innerText = query;
@@ -1833,7 +2031,6 @@
             inputField.value = '';
             scrollAIChatToBottom();
 
-            // 2. Render AI Loading indicator
             const aiLoadingMsg = document.createElement('div');
             aiLoadingMsg.className = 'chat-bubble ai';
             aiLoadingMsg.innerHTML = `
@@ -1843,23 +2040,18 @@
             logContainer.appendChild(aiLoadingMsg);
             scrollAIChatToBottom();
 
-            // Simulate clinical reasoning and generator-like output (500ms~1500ms stream delay)
             setTimeout(() => {
                 const responseData = generateLocalAIReport(query);
-                
-                // Replace loading bubble with dynamic clinical report
                 aiLoadingMsg.innerHTML = responseData;
                 scrollAIChatToBottom();
             }, 1200);
         }
 
-        // AI clinical match engine
         function generateLocalAIReport(userQuery) {
             const queryLower = userQuery.toLowerCase();
             let identifiedSymptoms = [];
             let matchedMeds = [];
 
-            // 1. Identify symptom categories from input query
             for (let category in symptomDictionary) {
                 const keywords = symptomDictionary[category];
                 if (keywords.some(kw => queryLower.includes(kw))) {
@@ -1867,31 +2059,27 @@
                 }
             }
 
-            // Fallback to match exact keywords if dictionary matches zero items
             if (identifiedSymptoms.length === 0) {
                 identifiedSymptoms = ["通用匹配"];
             }
 
-            // 2. Scan physical cabinet (`state.medicines`) for overlaps
             state.medicines.forEach(med => {
                 let score = 0;
                 const medName = (med.name || "").toLowerCase();
                 const medEffect = (med.effect || "").toLowerCase();
                 const medType = (med.type || "").toLowerCase();
+                const medNotes = (med.notes || "").toLowerCase();
 
-                // Direct Match in name/effect
                 identifiedSymptoms.forEach(symptom => {
                     if (symptom !== "通用匹配" && symptomDictionary[symptom]) {
-                        // Check dictionary associations
                         symptomDictionary[symptom].forEach(alias => {
-                            if (medName.includes(alias) || medEffect.includes(alias)) {
+                            if (medName.includes(alias) || medEffect.includes(alias) || medNotes.includes(alias)) {
                                 score += 3;
                             }
                         });
                     }
                 });
 
-                // Direct raw string match as fallback
                 if (queryLower.includes(medName) || medEffect.split(/[,，、\s]/).some(eff => eff && queryLower.includes(eff))) {
                     score += 5;
                 }
@@ -1901,10 +2089,8 @@
                 }
             });
 
-            // Sort matched drugs by relevancy score
             matchedMeds.sort((a, b) => b.score - a.score);
 
-            // 3. Render Apple Clinical Markdown Report
             let reportHtml = ``;
             
             if (identifiedSymptoms.includes("通用匹配") && matchedMeds.length === 0) {
@@ -1938,13 +2124,28 @@
                             warningTag = `<span class="ai-safety-alert" style="background:rgba(52,199,89,0.1); color:var(--accent-green);"><i class="fa-solid fa-shield-halved"></i> 安全在保</span>`;
                         }
 
+                        // Rating info display inside AI panel
+                        let aiRatingString = '';
+                        if (m.rating && m.rating > 0) {
+                            aiRatingString = ` | 个人评分：<b>${'⭐'.repeat(m.rating)}</b>`;
+                        }
+
+                        // Notes display inside AI panel
+                        let aiNotesBlock = '';
+                        if (m.notes && m.notes.trim() !== "") {
+                            aiNotesBlock = `<p style="margin-top: 4px; font-size:11px; color:#9b51e0; background:rgba(155, 81, 224, 0.05); padding: 4px 8px; border-radius: 4px;"><b>💡 个人备注：</b>${m.notes}</p>`;
+                        }
+
                         reportHtml += `
-                            <div class="ai-med-recommend">
-                                <div class="ai-med-info">
-                                    <h4>${m.name}</h4>
-                                    <p><i class="fa-solid fa-location-dot"></i> 存放在：<b>${m.location}</b> | 效期至：${m.expiry.replace('-', '.')}</p>
+                            <div class="ai-med-recommend" style="display:block;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div class="ai-med-info">
+                                        <h4>${m.name}</h4>
+                                        <p><i class="fa-solid fa-location-dot"></i> 存放在：<b>${m.location}</b>${aiRatingString}</p>
+                                    </div>
+                                    <div>${warningTag}</div>
                                 </div>
-                                <div>${warningTag}</div>
+                                ${aiNotesBlock}
                             </div>
                         `;
                     });
@@ -1978,6 +2179,8 @@
             document.getElementById('med-name-input').value = '';
             document.getElementById('med-effect-input').value = '';
             document.getElementById('med-expiry-input').value = '';
+            document.getElementById('med-notes-input').value = '';
+            setFormRatingState(0);
             uploadedImageBase64 = null;
             previewBox.style.display = 'none';
             fileTrigger.style.display = 'flex';
