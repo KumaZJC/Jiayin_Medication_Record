@@ -928,12 +928,12 @@
     <div class="app-container">
         <header>
             <div class="header-left">
-                <h1>我的智能药箱</h1>
-                <p>便捷存放，省心追踪保质期</p>
+                <h1>JiaYing的智能药箱</h1>
+                <p>宝贝，要健健康康的哦！</p>
             </div>
             <div class="header-actions">
                 <button class="btn-ai-spark" id="btn-open-ai">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI 药剂师
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> JunCheng医生
                 </button>
                 <button class="btn-archive" id="btn-open-archive" title="查看已丢弃药品的归档历史（可一键重新买入并重上架）">
                     <i class="fa-solid fa-box-archive"></i> 归档箱
@@ -1005,7 +1005,7 @@
             <div class="ai-header">
                 <div class="ai-header-title">
                     <i class="fa-solid fa-wand-magic-sparkles" style="color: #9b51e0; font-size: 18px;"></i>
-                    <h2>智能家庭药剂师</h2>
+                    <h2>宝贝的私人医生</h2>
                 </div>
                 <button class="btn-close" onclick="closeModal('ai-assistant-overlay')">
                     <i class="fa-solid fa-xmark"></i>
@@ -1013,7 +1013,7 @@
             </div>
             <div class="ai-body" id="ai-chat-body">
                 <div class="chat-bubble ai" id="ai-init-msg">
-                    您好！我是您的专属 AI 药剂师。我可以根据您不舒服的症状（例如：发烧、长青春痘、肚子疼），帮您在您当前的药箱中快速筛选出最合适的应对药物，并为您检查它们的保质期安全。
+                    宝贝！我是你的专属医生。我可以根据你不舒服的症状（例如：发烧、长青春痘、肚子疼），帮你在你当前的药箱中快速筛选出最合适的应对药物，并为你检查它们的保质期安全哟~
                 </div>
 
                 <div class="ai-presets" id="ai-presets-box">
@@ -1031,7 +1031,7 @@
                 </div>
             </div>
             <div class="ai-footer">
-                <input type="text" id="ai-user-input" class="ai-input" placeholder="向药剂师描述您的症状或不适...">
+                <input type="text" id="ai-user-input" class="ai-input" placeholder="宝贝你哪里不舒服了呀...">
                 <button class="btn-ai-send" id="btn-send-ai-query">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
@@ -1197,7 +1197,7 @@
                 <button class="btn-primary" style="background-color: var(--accent-blue); width: 100%;" onclick="closeModal('expiry-alert-modal')">我知道了</button>
                 <div style="display:flex; width:100%; gap:8px;">
                     <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(1)">今日不再提醒</button>
-                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(7)">7天内不再提醒</button>
+                    <button class="btn-secondary" style="font-size:12px; padding: 8px;" onclick="snoozeAlerts(999999999)">不再提醒</button>
                 </div>
             </div>
         </div>
